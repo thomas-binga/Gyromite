@@ -16,14 +16,14 @@ import java.util.HashMap;
 /** Actuellement, cette classe gère les postions
  * (ajouter conditions de victoire, chargement du plateau, etc.)
  */
-public class Jeu {
+public class Jeu<Integer> {
 
     public static final int SIZE_X = 20;
     public static final int SIZE_Y = 10;
 
     // compteur de déplacements horizontal et vertical (1 max par défaut, à chaque pas de temps)
-    private HashMap<Entite, Integer> cmptDeplH = new HashMap<Entite, Integer>();
-    private HashMap<Entite, Integer> cmptDeplV = new HashMap<Entite, Integer>();
+    private HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
+    private HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
 
@@ -78,6 +78,7 @@ public class Jeu {
 
         addEntite(new Mur(this), 2, 6);
         addEntite(new Mur(this), 3, 6);
+        addEntite(new Ramassable(this),4,7);
     }
 
     private void addEntite(Entite e, int x, int y) {
@@ -103,7 +104,7 @@ public class Jeu {
         
         Point pCible = calculerPointCible(pCourant, d);
         
-        if (contenuDansGrille(pCible) && objetALaPosition(pCible) == null) { // a adapter (collisions murs, etc.)
+        if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse()))) { // a adapter (collisions murs, etc.)
             // compter le déplacement : 1 deplacement horizontal et vertical max par pas de temps par entité
             switch (d) {
                 case bas:

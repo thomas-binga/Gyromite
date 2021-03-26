@@ -9,4 +9,5 @@ public class Echelle extends EntiteStatique{
     public boolean peutPermettreDeMonterDescendre() {
         return true;
     }
+    public boolean peutEtreTraverse(){return true;};
 }

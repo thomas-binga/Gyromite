@@ -8,4 +8,5 @@ public class Ramassable extends EntiteStatique{
     public boolean peutServirDeSupport(){
         return false;
     }
+    public boolean peutEtreTraverse(){return true;};
 }
