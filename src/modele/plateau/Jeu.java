@@ -6,9 +6,6 @@
 package modele.plateau;
 
 import modele.deplacements.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import java.io.File;
 
 import javafx.geometry.Point3D;
 //import java.awt.Point;
@@ -28,10 +25,13 @@ public class Jeu<Integer> {
     private HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
-    private Colonne cube;
-    private Colonne cube1;
-    private Colonne cube2;
-    private Colonne cube3;
+    private Colonne c1_cube1;
+    private Colonne c1_cube2;
+    private Colonne c1_cube3;
+    private Colonne c2_cube1;
+    private Colonne c2_cube2;
+    private Colonne c2_cube3;
+    private Colonne c2_cube4;
 
 
     private HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
@@ -69,14 +69,22 @@ public class Jeu<Integer> {
     private void initialisationDesEntites() {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
-        cube = new Colonne(this);
-        addEntite(cube, 6,8,0);
-        cube1 = new Colonne(this);
-        addEntite(cube1, 6,7,0);
-//        cube2 = new Colonne(this);
-//        addEntite(cube2, 6,6,0);
+        c1_cube1 = new Colonne(this, 'r');
+        addEntite(c1_cube1, 6,8,0);
+        c1_cube2 = new Colonne(this, 'r');
+        addEntite(c1_cube2, 6,7,0);
+        c1_cube3 = new Colonne(this, 'r');
+        addEntite(c1_cube3, 6,6,0);
+        c2_cube1 = new Colonne(this, 'b');
+        addEntite(c2_cube1, 15,1,0);
+        c2_cube2 = new Colonne(this, 'b');
+        addEntite(c2_cube2, 15,2,0);
+        c2_cube3 = new Colonne(this, 'b');
+        addEntite(c2_cube3, 15,3,0);
+        c2_cube4 = new Colonne(this, 'b');
+        addEntite(c2_cube4, 15,4,0);
 
-        colControl c = new colControl();
+
 
 
         Gravite g = new Gravite();
@@ -84,9 +92,14 @@ public class Jeu<Integer> {
         ordonnanceur.add(g);
 
         Controle4Directions.getInstance().addEntiteDynamique(hector);
-        colControl.getInstance().addEntiteDynamique(cube);
-        colControl.getInstance().addEntiteDynamique(cube1);
-        colControl.getInstance().addEntiteDynamique(cube2);
+        colControl.getInstance().addEntiteDynamique(c1_cube1);
+        colControl.getInstance().addEntiteDynamique(c1_cube2);
+        colControl.getInstance().addEntiteDynamique(c1_cube3);
+        colControl.getInstance().addEntiteDynamique(c2_cube1);
+        colControl.getInstance().addEntiteDynamique(c2_cube2);
+        colControl.getInstance().addEntiteDynamique(c2_cube3);
+        colControl.getInstance().addEntiteDynamique(c2_cube4);
+
 
         ordonnanceur.add(Controle4Directions.getInstance());
         ordonnanceur.add(colControl.getInstance());
@@ -127,7 +140,6 @@ public class Jeu<Integer> {
         addEntite(new Echelle(this),4,6,1);
         addEntite(new Echelle(this),4,7,1);
         addEntite(new Echelle(this),4,8,1);
-        addEntite(new Colonne(this), 6 ,8 ,0);
 
 
     }
@@ -176,11 +188,11 @@ public class Jeu<Integer> {
             }
             if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
                 regardeGauche=0;
-                regardeDroite+=1.5;
+                regardeDroite= 1.5F;
             }
             else if ((d == Direction.gauche) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle) ||(objetALaPosition(pCible) instanceof Mur))){
                 regardeDroite=0;
-                regardeGauche+=1.5;
+                regardeGauche=1.5F;
             }
         }
 

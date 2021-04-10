@@ -75,8 +75,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     case KeyEvent.VK_RIGHT : Controle4Directions.getInstance().setDirectionCourante(Direction.droite); break;
                     case KeyEvent.VK_DOWN : Controle4Directions.getInstance().setDirectionCourante(Direction.bas); break;
                     case KeyEvent.VK_UP : Controle4Directions.getInstance().setDirectionCourante(Direction.haut); break;
-                    case KeyEvent.VK_A : colControl.getInstance().setDirectionCourante(Direction.haut); break;
-                    case KeyEvent.VK_E : colControl.getInstance().setDirectionCourante(Direction.bas); break;
+                    case KeyEvent.VK_A : colControl.getInstance().setDirectionCourante('r'); break;
+                    case KeyEvent.VK_E : colControl.getInstance().setDirectionCourante('b'); break;
                 }
             }
         });
@@ -88,9 +88,6 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoHeroDroite = chargerIcone("Images/hires/HectorDroite.png");
         icoHeroGauche = chargerIcone("Images/hires/HectorGauche.png");
         icoVide = chargerIcone("Images/hires/Vide.png");
-        icoColonne = chargerIcone("Images/hires/Colonne_corps.png");
-        icoBasColonne = chargerIcone("Images/hires/Colonne_bas.png");
-        icoHautColonne = chargerIcone("Images/hires/Colonne_haut.png");
         icoMur = chargerIcone("Images/hires/Mur.png");
         icoRamassable = chargerIcone("Images/hires/Bombe.png");
         icoEchelle = chargerIcone("Images/hires/Echelle.png");
@@ -160,16 +157,20 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
+                        Colonne col = (Colonne) jeu.getGrille()[x][y][z];
                         if(!(jeu.getGrille()[x][y-1][z] instanceof Colonne)){
-                            tabJLabel[x][y].setIcon(icoHautColonne);
+                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_haut);
+                            else tabJLabel[x][y].setIcon(icoColonne_bleu_haut);
                             ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else if(!(jeu.getGrille()[x][y+1][z] instanceof Colonne)){
-                            tabJLabel[x][y].setIcon(icoBasColonne);
+                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_bas);
+                            else tabJLabel[x][y].setIcon(icoColonne_bleu_bas);
                             ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else {
-                            tabJLabel[x][y].setIcon(icoColonne);
+                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
+                            else tabJLabel[x][y].setIcon(icoColonne_bleu_corps);
                         }
                     } else if (jeu.getGrille()[x][y][z] instanceof Ramassable) {
                         tabJLabel[x][y].setIcon(icoRamassable);
