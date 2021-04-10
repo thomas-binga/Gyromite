@@ -28,6 +28,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     private int sizeX; // taille de la grille affichée
     private int sizeY;
+    private int sizeZ;
 
     // icones affichées dans la grille
     private ImageIcon icoHero;
@@ -41,8 +42,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
 
     public VueControleurGyromite(Jeu _jeu) {
-        sizeX = jeu.SIZE_X;
+        sizeX = _jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
+        sizeZ = _jeu.SIZE_Z;
         jeu = _jeu;
 
         chargerLesIcones();
@@ -115,19 +117,21 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                if (jeu.getGrille()[x][y] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
-                    // System.out.println("Héros !");
-                    tabJLabel[x][y].setIcon(icoHero);
-                } else if (jeu.getGrille()[x][y] instanceof Mur) {
-                    tabJLabel[x][y].setIcon(icoMur);
-                } else if (jeu.getGrille()[x][y] instanceof Colonne) {
-                    tabJLabel[x][y].setIcon(icoColonne);
-                } else if (jeu.getGrille()[x][y] instanceof Ramassable){
-                    tabJLabel[x][y].setIcon(icoRamassable);
-                } else if (jeu.getGrille()[x][y] instanceof Echelle){
-                    tabJLabel[x][y].setIcon(icoEchelle);
-                } else {
-                    tabJLabel[x][y].setIcon(icoVide);
+                for(int z = 0; z<sizeZ; z++) {
+                    if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
+                        // System.out.println("Héros !");
+                        tabJLabel[x][y].setIcon(icoHero);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
+                        tabJLabel[x][y].setIcon(icoMur);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
+                        tabJLabel[x][y].setIcon(icoColonne);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Ramassable) {
+                        tabJLabel[x][y].setIcon(icoRamassable);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
+                        tabJLabel[x][y].setIcon(icoEchelle);
+                    } else {
+                        tabJLabel[x][y].setIcon(icoVide);
+                    }
                 }
             }
         }
