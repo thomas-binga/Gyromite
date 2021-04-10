@@ -102,6 +102,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
                 JLabel jlab = new JLabel();
+                jlab.setLayout(new BoxLayout(jlab, BoxLayout.X_AXIS));
                 tabJLabel[x][y] = jlab; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
                 grilleJLabels.add(jlab);
             }
@@ -117,7 +118,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                for(int z = 0; z<sizeZ; z++) {
+                for(int z = sizeZ-1; z>=0; z--) {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
                         tabJLabel[x][y].setIcon(icoHero);
@@ -129,7 +130,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         tabJLabel[x][y].setIcon(icoRamassable);
                     } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
                         tabJLabel[x][y].setIcon(icoEchelle);
-                    } else {
+                    } else if(z==1){
                         tabJLabel[x][y].setIcon(icoVide);
                     }
                 }

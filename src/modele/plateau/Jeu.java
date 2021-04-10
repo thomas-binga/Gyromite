@@ -80,7 +80,7 @@ public class Jeu<Integer> {
 
         addEntite(new Mur(this), 2, 6,0);
         addEntite(new Mur(this), 3, 6,0);
-        addEntite(new Ramassable(this),4,7,0);
+        addEntite(new Ramassable(this),6,7,0);
         addEntite(new Echelle(this),4,6,1);
         addEntite(new Echelle(this),4,7,1);
         addEntite(new Echelle(this),4,8,1);
@@ -168,7 +168,10 @@ public class Jeu<Integer> {
         Entite retour = null;
         
         if (contenuDansGrille(p)) {
-            retour = grilleEntites[(int) p.getX()][(int) p.getY()][(int) p.getZ()];
+            retour = grilleEntites[(int) p.getX()][(int) p.getY()][0];
+            if (retour==null){
+                retour = grilleEntites[(int) p.getX()][(int) p.getY()][1];
+            }
         }
         
         return retour;

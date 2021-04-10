@@ -1,5 +1,6 @@
 package modele.deplacements;
 
+import modele.plateau.Echelle;
 import modele.plateau.Entite;
 import modele.plateau.EntiteDynamique;
 
@@ -39,6 +40,13 @@ public class Controle4Directions extends RealisateurDeDeplacement {
                         Entite eBas = e.regarderDansLaDirection(Direction.bas);
                         if (eBas != null && eBas.peutServirDeSupport()) {
                             if (e.avancerDirectionChoisie(Direction.haut))
+                                ret = true;
+                        }
+                        break;
+                    case bas:
+                        Entite eBas2 = e.regarderDansLaDirection(Direction.bas);
+                        if (eBas2 != null && eBas2 instanceof Echelle) {
+                            if (e.avancerDirectionChoisie(Direction.bas))
                                 ret = true;
                         }
                         break;
