@@ -171,7 +171,7 @@ public class Jeu<Integer> {
             if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
                 HerosSurEchelle=true;
             }
-            else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
+            else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros && !(objetALaPosition(pCible) instanceof Mur)) {
                 HerosSurEchelle=false;
             }
             if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
