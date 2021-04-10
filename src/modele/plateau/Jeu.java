@@ -34,6 +34,8 @@ public class Jeu<Integer> {
 
     private Ordonnanceur ordonnanceur =  new Ordonnanceur( this);
 
+    private int cptBombe = 0;
+
     public Jeu() {
         initialisationDesEntites();
     }
@@ -80,7 +82,25 @@ public class Jeu<Integer> {
 
         addEntite(new Mur(this), 2, 6,0);
         addEntite(new Mur(this), 3, 6,0);
-        addEntite(new Ramassable(this),6,7,0);
+
+        addEntite(new Mur(this), 9, 6,0);
+        addEntite(new Mur(this), 10, 6,0);
+
+        addEntite(new Mur(this), 12, 4,0);
+        addEntite(new Mur(this), 13, 4,0);
+        addEntite(new Mur(this), 14, 4,0);
+
+        addEntite(new Ramassable(this),7,8,0);
+        addEntite(new Ramassable(this),14,3,0);
+
+        addEntite(new Echelle(this),8,8,1);
+        addEntite(new Echelle(this),8,7,1);
+        addEntite(new Echelle(this),8,6,1);
+
+        addEntite(new Echelle(this),11,6,1);
+        addEntite(new Echelle(this),11,5,1);
+        addEntite(new Echelle(this),11,4,1);
+
         addEntite(new Echelle(this),4,6,1);
         addEntite(new Echelle(this),4,7,1);
         addEntite(new Echelle(this),4,8,1);
@@ -108,7 +128,16 @@ public class Jeu<Integer> {
         Point3D pCourant = map.get(e);
         
         Point3D pCible = calculerPointCible(pCourant, d);
-        
+
+        if(contenuDansGrille(pCible)){
+            if (objetALaPosition(pCible) instanceof Ramassable) {
+                cptBombe++;
+                System.out.println(cptBombe);
+            }
+            if (Ramassable.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
+        }
+
+
         if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse()))) { // a adapter (collisions murs, etc.)
             // compter le déplacement : 1 deplacement horizontal et vertical max par pas de temps par entité
             switch (d) {
@@ -137,7 +166,6 @@ public class Jeu<Integer> {
 
         return retour;
     }
-    
     
     private Point3D calculerPointCible(Point3D pCourant, Direction d) {
         Point3D pCible = null;
