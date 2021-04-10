@@ -49,6 +49,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoColonne_bleu_bas;
     private ImageIcon icoColonne_bleu_corps;
     private ImageIcon icoColonne_bleu_haut;
+    private ImageIcon icoHeroDroite;
+    private ImageIcon icoHeroGauche;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -83,6 +85,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     private void chargerLesIcones() {
         icoHero = chargerIcone("Images/hires/Hector.png");
+        icoHeroDroite = chargerIcone("Images/hires/HectorDroite.png");
+        icoHeroGauche = chargerIcone("Images/hires/HectorGauche.png");
         icoVide = chargerIcone("Images/hires/Vide.png");
         icoColonne = chargerIcone("Images/hires/Colonne_corps.png");
         icoBasColonne = chargerIcone("Images/hires/Colonne_bas.png");
@@ -175,6 +179,21 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         tabJLabel[1][10].setText(String.valueOf(jeu.cptBombe+" / "+Ramassable.getTotalBombes()));
                         tabJLabel[1][10].setBackground(Color.BLACK);
                         tabJLabel[1][10].setForeground(Color.GREEN);
+                    }
+                    else if(x==4 && y==10){
+                        if (jeu.cptBombe==Ramassable.getTotalBombes()){
+                            tabJLabel[4][10].setOpaque(true);
+                            tabJLabel[4][10].setText(String.valueOf("Vous avez gagné !"));
+                            tabJLabel[4][10].setBackground(Color.BLACK);
+                            tabJLabel[4][10].setForeground(Color.GREEN);
+                        }
+                        else {
+                            tabJLabel[4][10].setOpaque(true);
+                            tabJLabel[4][10].setText(String.valueOf("Jeu en cours"));
+                            tabJLabel[4][10].setBackground(Color.BLACK);
+                            tabJLabel[4][10].setForeground(Color.CYAN);
+                        }
+
                     }
                 }
             }
