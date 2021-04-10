@@ -1,5 +1,7 @@
 
 import VueControleur.VueControleurGyromite;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import modele.plateau.Jeu;
 
 /*
@@ -9,7 +11,7 @@ import modele.plateau.Jeu;
  */
 
 
-public class Main {
+public class Main{
     public static void main(String[] args) {
         Jeu jeu = new Jeu();
         
@@ -20,4 +22,5 @@ public class Main {
         vc.setVisible(true);
         jeu.start(300);
     }
+
 }

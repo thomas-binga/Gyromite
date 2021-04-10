@@ -151,14 +151,22 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         // System.out.println("Héros !");
                         if (jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
                         else if (!jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHero);
+                        if(jeu.regardeDroite>0 && (!jeu.HerosSurEchelle)) {
+                            tabJLabel[x][y].setIcon(icoHeroDroite);
+                        }
+                        else if(jeu.regardeGauche>0 && (!jeu.HerosSurEchelle)) {
+                            tabJLabel[x][y].setIcon(icoHeroGauche);
+                        }
                     } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
                         if(!(jeu.getGrille()[x][y-1][z] instanceof Colonne)){
                             tabJLabel[x][y].setIcon(icoHautColonne);
+                            ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else if(!(jeu.getGrille()[x][y+1][z] instanceof Colonne)){
                             tabJLabel[x][y].setIcon(icoBasColonne);
+                            ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else {
                             tabJLabel[x][y].setIcon(icoColonne);
@@ -205,6 +213,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();
+        if (jeu.regardeDroite>0) jeu.regardeDroite -= 0.5;
+        if (jeu.regardeGauche>0) jeu.regardeGauche -= 0.5;
         /*
         SwingUtilities.invokeLater(new Runnable() {
                     @Override

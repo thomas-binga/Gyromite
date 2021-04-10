@@ -3,6 +3,7 @@ package modele.deplacements;
 import modele.plateau.Colonne;
 import modele.plateau.Entite;
 import modele.plateau.EntiteDynamique;
+import modele.plateau.Mur;
 
 public class colControl extends RealisateurDeDeplacement{
     private Direction directionCourante;
@@ -30,7 +31,7 @@ public class colControl extends RealisateurDeDeplacement{
 //                            if (e.avancerDirectionChoisie(Direction.haut)){
 //                                ret = true;
 
-                        if (eHaut == null || eHaut instanceof Colonne){
+                        if (!(eHaut instanceof Mur)){
                             if(e.avancerDirectionChoisie(Direction.haut)) {
                                 ret = true;
                             } break;

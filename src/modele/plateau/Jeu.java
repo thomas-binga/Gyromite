@@ -6,7 +6,9 @@
 package modele.plateau;
 
 import modele.deplacements.*;
-//import sun.audio.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 
 import javafx.geometry.Point3D;
 //import java.awt.Point;
@@ -40,6 +42,8 @@ public class Jeu<Integer> {
     public int cptBombe = 0;
 
     public boolean HerosSurEchelle=false;
+    public float regardeGauche = 0;
+    public float regardeDroite = 0;
 
     public Jeu() {
         initialisationDesEntites();
@@ -69,8 +73,8 @@ public class Jeu<Integer> {
         addEntite(cube, 6,8,0);
         cube1 = new Colonne(this);
         addEntite(cube1, 6,7,0);
-        cube2 = new Colonne(this);
-        addEntite(cube2, 6,6,0);
+//        cube2 = new Colonne(this);
+//        addEntite(cube2, 6,6,0);
 
         colControl c = new colControl();
 
@@ -145,38 +149,54 @@ public class Jeu<Integer> {
      * Sinon, rien n'est fait.
      */
     public boolean deplacerEntite(Entite e, Direction d) {
+
         boolean retour = false;
         
         Point3D pCourant = map.get(e);
         
         Point3D pCible = calculerPointCible(pCourant, d);
 
+
         if(contenuDansGrille(pCible)){
+//            if ((e instanceof Colonne) && !((Colonne) e).bord) {
+//                deplacerEntite(pCourant, pCible, e);
+//                return true;
+//            }
             if (objetALaPosition(pCible) instanceof Ramassable) {
                 cptBombe++;
                 System.out.println(cptBombe);
             }
             if (Ramassable.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
 
-            if (objetALaPosition(pCible) instanceof Echelle) {
+            if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
                 HerosSurEchelle=true;
             }
-            else {
+            else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
                 HerosSurEchelle=false;
+            }
+            if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
+                regardeGauche=0;
+                regardeDroite+=1.5;
+            }
+            else if ((d == Direction.gauche) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle) ||(objetALaPosition(pCible) instanceof Mur))){
+                regardeDroite=0;
+                regardeGauche+=1.5;
             }
         }
 
 
         if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse()))) { // a adapter (collisions murs, etc.)
             // compter le déplacement : 1 deplacement horizontal et vertical max par pas de temps par entité
+
             switch (d) {
                 case bas:
                 case haut:
-                    if (cmptDeplV.get(e) == null) {
+                    if (e instanceof Heros && (cmptDeplV.get(e) == null)) {
                         cmptDeplV.put(e, 1);
 
                         retour = true;
                     }
+                    retour=true;
                     break;
                 case gauche:
                 case droite:

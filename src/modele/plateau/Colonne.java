@@ -7,6 +7,7 @@ public class Colonne extends EntiteDynamique {
     public boolean peutServirDeSupport() { return true; }
     public boolean peutPermettreDeMonterDescendre() { return false; };
     public boolean peutEcraser() {return true;}
+    public boolean bord = false;
 
     @Override
     public boolean peutEtreTraverse() {
