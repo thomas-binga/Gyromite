@@ -36,6 +36,8 @@ public class Jeu<Integer> {
 
     private int cptBombe = 0;
 
+    public boolean HerosSurEchelle=false;
+
     public Jeu() {
         initialisationDesEntites();
     }
@@ -135,6 +137,13 @@ public class Jeu<Integer> {
                 System.out.println(cptBombe);
             }
             if (Ramassable.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
+
+            if (objetALaPosition(pCible) instanceof Echelle) {
+                HerosSurEchelle=true;
+            }
+            else {
+                HerosSurEchelle=false;
+            }
         }
 
 

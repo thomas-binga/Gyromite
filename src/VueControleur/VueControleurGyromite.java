@@ -37,6 +37,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoColonne;
     private ImageIcon icoRamassable;
     private ImageIcon icoEchelle;
+    private ImageIcon icoHeroEchelle;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -74,6 +75,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoMur = chargerIcone("Images/hires/Mur.png");
         icoRamassable = chargerIcone("Images/hires/Bombe.png");
         icoEchelle = chargerIcone("Images/hires/Echelle.png");
+        icoHeroEchelle = chargerIcone("Images/hires/HeroSurEchelle.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -120,7 +122,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
                 for(int z = sizeZ-1; z>=0; z--) {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
-                        tabJLabel[x][y].setIcon(icoHero);
+                        if (jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
+                        else if (jeu.HerosSurEchelle==false) tabJLabel[x][y].setIcon(icoHero);
                     } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
