@@ -15,7 +15,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import modele.deplacements.Controle4Directions;
+import modele.deplacements.Couleur;
 import modele.deplacements.Direction;
+import modele.deplacements.colControl;
 import modele.plateau.*;
 
 
@@ -35,6 +37,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoHero;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
+    private ImageIcon icoColonne;
+    private ImageIcon icoBasColonne;
+    private ImageIcon icoHautColonne;
     private ImageIcon icoRamassable;
     private ImageIcon icoEchelle;
     private ImageIcon icoHeroEchelle;
@@ -68,6 +73,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     case KeyEvent.VK_RIGHT : Controle4Directions.getInstance().setDirectionCourante(Direction.droite); break;
                     case KeyEvent.VK_DOWN : Controle4Directions.getInstance().setDirectionCourante(Direction.bas); break;
                     case KeyEvent.VK_UP : Controle4Directions.getInstance().setDirectionCourante(Direction.haut); break;
+                    case KeyEvent.VK_A : colControl.getInstance().setDirectionCourante(Direction.haut); break;
+                    case KeyEvent.VK_E : colControl.getInstance().setDirectionCourante(Direction.bas); break;
                 }
             }
         });
@@ -77,6 +84,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private void chargerLesIcones() {
         icoHero = chargerIcone("Images/hires/Hector.png");
         icoVide = chargerIcone("Images/hires/Vide.png");
+        icoColonne = chargerIcone("Images/hires/Colonne_corps.png");
+        icoBasColonne = chargerIcone("Images/hires/Colonne_bas.png");
+        icoHautColonne = chargerIcone("Images/hires/Colonne_haut.png");
         icoMur = chargerIcone("Images/hires/Mur.png");
         icoRamassable = chargerIcone("Images/hires/Bombe.png");
         icoEchelle = chargerIcone("Images/hires/Echelle.png");
@@ -136,11 +146,19 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
                         if (jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
-                        else if (jeu.HerosSurEchelle==false) tabJLabel[x][y].setIcon(icoHero);
+                        else if (!jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHero);
                     } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
-                        tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
+                        if(!(jeu.getGrille()[x][y-1][z] instanceof Colonne)){
+                            tabJLabel[x][y].setIcon(icoHautColonne);
+                        }
+                        else if(!(jeu.getGrille()[x][y+1][z] instanceof Colonne)){
+                            tabJLabel[x][y].setIcon(icoBasColonne);
+                        }
+                        else {
+                            tabJLabel[x][y].setIcon(icoColonne);
+                        }
                     } else if (jeu.getGrille()[x][y][z] instanceof Ramassable) {
                         tabJLabel[x][y].setIcon(icoRamassable);
                     } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {

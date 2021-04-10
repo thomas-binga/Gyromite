@@ -5,10 +5,8 @@
  */
 package modele.plateau;
 
-import modele.deplacements.Controle4Directions;
-import modele.deplacements.Direction;
-import modele.deplacements.Gravite;
-import modele.deplacements.Ordonnanceur;
+import modele.deplacements.*;
+//import sun.audio.*;
 
 import javafx.geometry.Point3D;
 //import java.awt.Point;
@@ -28,6 +26,11 @@ public class Jeu<Integer> {
     private HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
+    private Colonne cube;
+    private Colonne cube1;
+    private Colonne cube2;
+    private Colonne cube3;
+
 
     private HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
     private Entite[][][] grilleEntites = new Entite[SIZE_X][SIZE_Y][SIZE_Z]; // permet de récupérer une entité à partir de ses coordonnées
@@ -62,13 +65,27 @@ public class Jeu<Integer> {
     private void initialisationDesEntites() {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
+        cube = new Colonne(this);
+        addEntite(cube, 6,8,0);
+        cube1 = new Colonne(this);
+        addEntite(cube1, 6,7,0);
+        cube2 = new Colonne(this);
+        addEntite(cube2, 6,6,0);
+
+        colControl c = new colControl();
+
 
         Gravite g = new Gravite();
         g.addEntiteDynamique(hector);
         ordonnanceur.add(g);
 
         Controle4Directions.getInstance().addEntiteDynamique(hector);
+        colControl.getInstance().addEntiteDynamique(cube);
+        colControl.getInstance().addEntiteDynamique(cube1);
+        colControl.getInstance().addEntiteDynamique(cube2);
+
         ordonnanceur.add(Controle4Directions.getInstance());
+        ordonnanceur.add(colControl.getInstance());
 
         // murs extérieurs horizontaux
         for (int x = 0; x < 20; x++) {
@@ -106,6 +123,9 @@ public class Jeu<Integer> {
         addEntite(new Echelle(this),4,6,1);
         addEntite(new Echelle(this),4,7,1);
         addEntite(new Echelle(this),4,8,1);
+        addEntite(new Colonne(this), 6 ,8 ,0);
+
+
     }
 
     private void addEntite(Entite e, int x, int y, int z) {
@@ -217,4 +237,5 @@ public class Jeu<Integer> {
     public Ordonnanceur getOrdonnanceur() {
         return ordonnanceur;
     }
+
 }

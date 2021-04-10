@@ -1,5 +1,6 @@
 package modele.deplacements;
 
+import modele.plateau.Colonne;
 import modele.plateau.Echelle;
 import modele.plateau.Entite;
 import modele.plateau.EntiteDynamique;
@@ -22,6 +23,7 @@ public class Controle4Directions extends RealisateurDeDeplacement {
     public void setDirectionCourante(Direction _directionCourante) {
         directionCourante = _directionCourante;
     }
+
 
     public boolean realiserDeplacement() {
         boolean ret = false;
