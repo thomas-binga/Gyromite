@@ -34,7 +34,7 @@ public class Jeu<Integer> {
 
     private Ordonnanceur ordonnanceur =  new Ordonnanceur( this);
 
-    private int cptBombe = 0;
+    public int cptBombe = 0;
 
     public boolean HerosSurEchelle=false;
 

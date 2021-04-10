@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
@@ -34,10 +35,15 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoHero;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
-    private ImageIcon icoColonne;
     private ImageIcon icoRamassable;
     private ImageIcon icoEchelle;
     private ImageIcon icoHeroEchelle;
+    private ImageIcon icoColonne_rouge_bas;
+    private ImageIcon icoColonne_rouge_corps;
+    private ImageIcon icoColonne_rouge_haut;
+    private ImageIcon icoColonne_bleu_bas;
+    private ImageIcon icoColonne_bleu_corps;
+    private ImageIcon icoColonne_bleu_haut;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -71,11 +77,18 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private void chargerLesIcones() {
         icoHero = chargerIcone("Images/hires/Hector.png");
         icoVide = chargerIcone("Images/hires/Vide.png");
-        icoColonne = chargerIcone("Images/hires/Colonne_corps.png");
         icoMur = chargerIcone("Images/hires/Mur.png");
         icoRamassable = chargerIcone("Images/hires/Bombe.png");
         icoEchelle = chargerIcone("Images/hires/Echelle.png");
         icoHeroEchelle = chargerIcone("Images/hires/HeroSurEchelle.png");
+
+        icoColonne_rouge_bas = chargerIcone("Images/hires/Colonne_rouge_bas.png");
+        icoColonne_rouge_corps = chargerIcone("Images/hires/Colonne_rouge_corps.png");
+        icoColonne_rouge_haut = chargerIcone("Images/hires/Colonne_rouge_haut.png");
+
+        icoColonne_bleu_bas = chargerIcone("Images/hires/Colonne_bleu_bas.png");
+        icoColonne_bleu_corps = chargerIcone("Images/hires/Colonne_bleu_corps.png");
+        icoColonne_bleu_haut = chargerIcone("Images/hires/Colonne_bleu_haut.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -118,7 +131,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private void mettreAJourAffichage() {
 
         for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY-1; y++) {
+            for (int y = 0; y < sizeY; y++) {
                 for(int z = sizeZ-1; z>=0; z--) {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
@@ -127,17 +140,29 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
-                        tabJLabel[x][y].setIcon(icoColonne);
+                        tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
                     } else if (jeu.getGrille()[x][y][z] instanceof Ramassable) {
                         tabJLabel[x][y].setIcon(icoRamassable);
                     } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
                         tabJLabel[x][y].setIcon(icoEchelle);
-                    } else if(z==1){
+                    } else if(z==1 && y<10){
                         tabJLabel[x][y].setIcon(icoVide);
+                    } else if(x==0 && y==10){
+                        tabJLabel[0][10].setOpaque(true);
+                        tabJLabel[0][10].setText("<html>Bombes<br/>ramassées</html>");
+                        tabJLabel[0][10].setBackground(Color.BLACK);
+                        tabJLabel[0][10].setForeground(Color.WHITE);
+                    } else if(x==2 && y==10){
+                        tabJLabel[1][10].setOpaque(true);
+                        tabJLabel[1][10].setText(String.valueOf(jeu.cptBombe+" / "+Ramassable.getTotalBombes()));
+                        tabJLabel[1][10].setBackground(Color.BLACK);
+                        tabJLabel[1][10].setForeground(Color.GREEN);
                     }
                 }
             }
         }
+
+
     }
 
     @Override
