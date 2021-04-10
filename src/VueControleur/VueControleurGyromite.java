@@ -68,13 +68,12 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
 
     private void chargerLesIcones() {
-        icoHero = chargerIcone("Images/Pacman.png");
-        icoVide = chargerIcone("Images/Vide.png");
-        icoColonne = chargerIcone("Images/Colonne.png");
-        icoMur = chargerIcone("Images/Mur.png");
-        icoRamassable = chargerIcone("Images/Ramassable.png");
-        icoEchelle = chargerIcone("Images/Echelle.png");
-
+        icoHero = chargerIcone("Images/hires/Hector.png");
+        icoVide = chargerIcone("Images/hires/Vide.png");
+        icoColonne = chargerIcone("Images/hires/Colonne_corps.png");
+        icoMur = chargerIcone("Images/hires/Mur.png");
+        icoRamassable = chargerIcone("Images/hires/Bombe.png");
+        icoEchelle = chargerIcone("Images/hires/Echelle.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -92,7 +91,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("Gyromite");
-        setSize(400, 250);
+        setSize(1280, 640);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
