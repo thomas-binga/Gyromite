@@ -20,6 +20,7 @@ public class Jeu<Integer> {
     public static final int SIZE_Y = 11;
     public static final int SIZE_Z = 2;
     public boolean end = false;
+    public boolean win = false;
 
     // compteur de déplacements horizontal et vertical (1 max par défaut, à chaque pas de temps)
     private HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
@@ -191,7 +192,7 @@ public class Jeu<Integer> {
                 cptBombe++;
                 System.out.println(cptBombe);
             }
-            if (Ramassable.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
+            if (Ramassable.getTotalBombes()==cptBombe) win=true;
 
             if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
                 herosSurEchelle =true;

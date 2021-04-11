@@ -54,6 +54,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
+    JComponent grilleJLabels;
+
 
     public VueControleurGyromite(Jeu _jeu) {
         sizeX = _jeu.SIZE_X;
@@ -124,7 +126,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
         setSize(1280, 704);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
-        JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
+        grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
 
         tabJLabel = new JLabel[sizeX][sizeY];
 
@@ -143,6 +145,25 @@ public class VueControleurGyromite extends JFrame implements Observer {
         long endTime = System.nanoTime();
         long time_taken=(endTime-startTime)/1000000000;
         System.out.println(time_taken);
+
+        JPanel endScreenPanel = new JPanel();
+
+        JLabel endScreentxt = new JLabel("FIN !");
+        endScreenPanel.add(endScreentxt);
+
+        if (jeu.end){
+            endScreenPanel.add(new JLabel("Vous avez perdu..."));
+        } else if (jeu.win) {
+            endScreenPanel.add(new JLabel("Vous avez Gagné !"));
+        }
+
+
+
+        remove(grilleJLabels);
+        revalidate();
+        add(endScreenPanel);
+
+
     }
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
@@ -224,9 +245,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (jeu.end){
+        if (jeu.end || jeu.win){
             endScreen();
-            return;
         } else {
             mettreAJourAffichage();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
