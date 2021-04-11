@@ -25,7 +25,7 @@ public class colControl extends RealisateurDeDeplacement{
         }
         else if (couleur == 'b'){
             if(directionCourante_b == Direction.haut) directionCourante_b = Direction.bas;
-            directionCourante_b = Direction.haut;
+            else directionCourante_b = Direction.haut;
         }
     }
 
