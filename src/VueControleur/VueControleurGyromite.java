@@ -55,6 +55,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoBonus;
     private ImageIcon icoBotSurBombe;
     private ImageIcon icoBotSurBonus;
+    private ImageIcon imgFinGagne,imgFinPerdu;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -110,11 +111,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoBot= chargerIcone("Images/hires/Zombie.png");
         icoBotDroite = chargerIcone("Images/hires/ZombieDroite.png");
         icoBotGauche = chargerIcone("Images/hires/ZombieGauche.png");
-
         icoBonus = chargerIcone("Images/hires/Emeraude.png");
         icoBotEchelle = chargerIcone("Images/hires/ZombieSurEchelle.png");
         icoBotSurBombe = chargerIcone("Images/hires/ZombieDevantBombe.png");
         icoBotSurBonus = chargerIcone("Images/hires/ZombieDevantBonus.png");
+
+        imgFinGagne = chargerIcone("Images/hires/finGagne.png");
+        imgFinPerdu = chargerIcone("Images/hires/finPerdu.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -157,13 +160,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
         JPanel endScreenPanel = new JPanel();
 
-        JLabel endScreentxt = new JLabel("FIN !");
+        JLabel endScreentxt = new JLabel();
         endScreenPanel.add(endScreentxt);
 
         if (jeu.end){
-            endScreenPanel.add(new JLabel("Vous avez perdu..."));
+            endScreentxt.setIcon(imgFinPerdu);
         } else if (jeu.win) {
-            endScreenPanel.add(new JLabel("Vous avez Gagné !"));
+            endScreentxt.setIcon(imgFinGagne);
         }
 
 
@@ -192,7 +195,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                             tabJLabel[x][y].setIcon(icoHeroGauche);
                         }
                     }
-                    else if (jeu.getGrille()[x][y][0] instanceof Bot){
+                    else if (jeu.getGrille()[x][y][z] instanceof Bot){
                         if (jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBotEchelle);
                         else if (!jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBot);
                         if(jeu.botRegardeDroite >0 && (!jeu.botSurEchelle)) {
@@ -275,8 +278,6 @@ public class VueControleurGyromite extends JFrame implements Observer {
             mettreAJourAffichage();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
             if (jeu.herosRegardeGauche > 0) jeu.herosRegardeGauche -= 0.5;
-            if (jeu.botRegardeDroite>0) jeu.botRegardeDroite -=0.5;
-            if (jeu.botRegardeGauche>0) jeu.botRegardeGauche-=0.5;
         }
         /*
         SwingUtilities.invokeLater(new Runnable() {
