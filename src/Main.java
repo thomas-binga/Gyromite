@@ -20,7 +20,7 @@ public class Main{
         jeu.getOrdonnanceur().addObserver(vc);
         
         vc.setVisible(true);
-        jeu.start(300);
+        jeu.start(200);
     }
 
 }
