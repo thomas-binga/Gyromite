@@ -1,10 +1,9 @@
 package VueControleur;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
@@ -32,6 +31,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private int sizeX; // taille de la grille affichée
     private int sizeY;
     private int sizeZ;
+    public Graphics g;
+    long startTime = System.nanoTime();
 
     // icones affichées dans la grille
     private ImageIcon icoHero;
@@ -135,12 +136,25 @@ public class VueControleurGyromite extends JFrame implements Observer {
         add(grilleJLabels);
     }
 
-    
+    public void endScreen(){
+        long endTime = System.nanoTime();
+        g.setFont(new Font("serif",Font.BOLD+Font.ITALIC,50));
+        long time_taken=(endTime-startTime)/1000000000;
+        String tym=String.valueOf(time_taken);
+        g.setColor(Color.RED);
+        g.drawString("Game Over",300, 320);
+        g.drawString("GAME OVER", 100, 50);
+        g.drawString("SCORE= ",100, 100);
+        g.drawString(tym, 300, 100);
+    }
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
     private void mettreAJourAffichage() {
-
+        if (jeu.end){
+            endScreen();
+            return;
+        }
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 for(int z = sizeZ-1; z>=0; z--) {

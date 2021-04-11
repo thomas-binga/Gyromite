@@ -19,6 +19,7 @@ public class Jeu<Integer> {
     public static final int SIZE_X = 20;
     public static final int SIZE_Y = 11;
     public static final int SIZE_Z = 2;
+    public boolean end = false;
 
     // compteur de déplacements horizontal et vertical (1 max par défaut, à chaque pas de temps)
     private HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
@@ -168,7 +169,7 @@ public class Jeu<Integer> {
         
         Point3D pCible = calculerPointCible(pCourant, d);
 
-
+        if((e instanceof Heros) && !(((Heros) e).vivant)) return false;
         if(contenuDansGrille(pCible)){
 //            if ((e instanceof Colonne) && !((Colonne) e).bord) {
 //                deplacerEntite(pCourant, pCible, e);
@@ -194,21 +195,25 @@ public class Jeu<Integer> {
                 regardeDroite=0;
                 regardeGauche=1.5F;
             }
+            if((e instanceof Colonne)&&(d==Direction.haut)&&(objetALaPosition(pCible) instanceof Heros)){
+                Point3D pCible2 = calculerPointCible(pCible, d);
+                deplacerEntite(pCourant, pCible, e);
+                deplacerEntite(pCible, pCible2, objetALaPosition(pCible));
+            }
         }
 
 
-        if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse()))) { // a adapter (collisions murs, etc.)
+        if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse())||(objetALaPosition(pCible).peutEtreEcrase()))) { // a adapter (collisions murs, etc.)
             // compter le déplacement : 1 deplacement horizontal et vertical max par pas de temps par entité
-
             switch (d) {
                 case bas:
                 case haut:
-                    if (e instanceof Heros && (cmptDeplV.get(e) == null)) {
+                    if ((e instanceof Heros) &&cmptDeplV.get(e) == null) {
                         cmptDeplV.put(e, 1);
 
                         retour = true;
                     }
-                    retour=true;
+                    retour= true;
                     break;
                 case gauche:
                 case droite:
@@ -242,11 +247,15 @@ public class Jeu<Integer> {
     }
     
     private void deplacerEntite(Point3D pCourant, Point3D pCible, Entite e) {
+        if((objetALaPosition(pCible) instanceof Heros) && e instanceof Colonne){
+            ((Heros) objetALaPosition(pCible)).vivant = false;
+            //Changer Sprite + Afficher Game Over
+            this.end=true;
+        }
         grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][(int) pCourant.getZ()] = null;
         grilleEntites[(int) pCible.getX()][(int) pCible.getY()][(int) pCible.getZ()] = e;
         map.put(e, pCible);
     }
-    
     /** Indique si p est contenu dans la grille
      */
     private boolean contenuDansGrille(Point3D p) {
