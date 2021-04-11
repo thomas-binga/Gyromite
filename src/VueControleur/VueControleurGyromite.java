@@ -108,13 +108,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoColonne_bleu_haut = chargerIcone("Images/hires/Colonne_bleu_haut.png");
 
         icoBot= chargerIcone("Images/hires/Zombie.png");
-//        icoBotDroite = chargerIcone("Image/hires/");
-//        icoBotGauche = chargerIcone("Image/hires/");
+        icoBotDroite = chargerIcone("Images/hires/ZombieDroite.png");
+        icoBotGauche = chargerIcone("Images/hires/ZombieGauche.png");
 
-//        icoBonus = chargerIcone("/Images/hires/Emeraude.png");
-//        icoBotEchelle = chargerIcone("Image/hires/BotSurEchelle.png");
-//        icoBotSurBombe = chargerIcone("Image/hires/");
-//        icoBotSurBonus = chargerIcone("Image/hires/");
+        icoBonus = chargerIcone("Images/hires/Emeraude.png");
+        icoBotEchelle = chargerIcone("Images/hires/ZombieSurEchelle.png");
+        icoBotSurBombe = chargerIcone("Images/hires/ZombieDevantBombe.png");
+        icoBotSurBonus = chargerIcone("Images/hires/ZombieDevantBonus.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -192,7 +192,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                             tabJLabel[x][y].setIcon(icoHeroGauche);
                         }
                     }
-                    else if (jeu.getGrille()[x][y][z] instanceof Bot){
+                    else if (jeu.getGrille()[x][y][0] instanceof Bot){
                         if (jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBotEchelle);
                         else if (!jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBot);
                         if(jeu.botRegardeDroite >0 && (!jeu.botSurEchelle)) {
@@ -275,6 +275,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
             mettreAJourAffichage();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
             if (jeu.herosRegardeGauche > 0) jeu.herosRegardeGauche -= 0.5;
+            if (jeu.botRegardeDroite>0) jeu.botRegardeDroite -=0.5;
+            if (jeu.botRegardeGauche>0) jeu.botRegardeGauche-=0.5;
         }
         /*
         SwingUtilities.invokeLater(new Runnable() {

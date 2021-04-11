@@ -23,24 +23,17 @@ public class Jeu<Integer> {
     public boolean win = false;
 
     // compteur de déplacements horizontal et vertical (1 max par défaut, à chaque pas de temps)
-    private HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
-    private HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
+    private final HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
+    private final HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
     private Bot zombie;
-    private Colonne c1_cube1;
-    private Colonne c1_cube2;
-    private Colonne c1_cube3;
-    private Colonne c2_cube1;
-    private Colonne c2_cube2;
-    private Colonne c2_cube3;
-    private Colonne c2_cube4;
 
 
-    private HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
-    private Entite[][][] grilleEntites = new Entite[SIZE_X][SIZE_Y][SIZE_Z]; // permet de récupérer une entité à partir de ses coordonnées
+    private final HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
+    private final Entite[][][] grilleEntites = new Entite[SIZE_X][SIZE_Y][SIZE_Z]; // permet de récupérer une entité à partir de ses coordonnées
 
-    private Ordonnanceur ordonnanceur =  new Ordonnanceur( this);
+    private final Ordonnanceur ordonnanceur =  new Ordonnanceur( this);
 
     public int cptBombe = 0;
     public int score = 0;
@@ -82,21 +75,21 @@ public class Jeu<Integer> {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
         zombie = new Bot(this);
-        addEntite(zombie, 13,3,1);
+        addEntite(zombie, 13,3,0);
 
-        c1_cube1 = new Colonne(this, 'r');
+        Colonne c1_cube1 = new Colonne(this, 'r');
         addEntite(c1_cube1, 6,8,0);
-        c1_cube2 = new Colonne(this, 'r');
+        Colonne c1_cube2 = new Colonne(this, 'r');
         addEntite(c1_cube2, 6,7,0);
-        c1_cube3 = new Colonne(this, 'r');
+        Colonne c1_cube3 = new Colonne(this, 'r');
         addEntite(c1_cube3, 6,6,0);
-        c2_cube1 = new Colonne(this, 'b');
+        Colonne c2_cube1 = new Colonne(this, 'b');
         addEntite(c2_cube1, 15,1,0);
-        c2_cube2 = new Colonne(this, 'b');
+        Colonne c2_cube2 = new Colonne(this, 'b');
         addEntite(c2_cube2, 15,2,0);
-        c2_cube3 = new Colonne(this, 'b');
+        Colonne c2_cube3 = new Colonne(this, 'b');
         addEntite(c2_cube3, 15,3,0);
-        c2_cube4 = new Colonne(this, 'b');
+        Colonne c2_cube4 = new Colonne(this, 'b');
         addEntite(c2_cube4, 15,4,0);
 
 
@@ -145,10 +138,10 @@ public class Jeu<Integer> {
         addEntite(new Mur(this), 13, 4,0);
         addEntite(new Mur(this), 14, 4,0);
 
-        addEntite(new Bombe(this),7,8,0);
-        addEntite(new Bombe(this),14,3,0);
+        addEntite(new Bombe(this),7,8,1);
+        addEntite(new Bombe(this),14,3,1);
 
-        addEntite(new Bonus(this), 15,8,0);
+        addEntite(new Bonus(this), 15,8,1);
 
         addEntite(new Echelle(this),8,8,1);
         addEntite(new Echelle(this),8,7,1);
@@ -195,8 +188,13 @@ public class Jeu<Integer> {
 //                deplacerEntite(pCourant, pCible, e);
 //                return true;
 //            }
-            if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Ramassable) {
+            if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bombe) {
                 cptBombe++;
+                score+=100;
+                System.out.println(cptBombe);
+            }
+            if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bonus) {
+                score+=200;
                 System.out.println(cptBombe);
             }
             if ((objetALaPosition(pCourant) instanceof Bot) && objetALaPosition(pCible) instanceof Ramassable) {
@@ -228,6 +226,14 @@ public class Jeu<Integer> {
             else if ((d == Direction.gauche) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle) ||(objetALaPosition(pCible) instanceof Mur))){
                 herosRegardeDroite =0;
                 herosRegardeGauche =1.5F;
+            }
+            if((d == Direction.droite) && e instanceof Bot && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
+                botRegardeGauche =0;
+                botRegardeDroite = 1.5F;
+            }
+            else if ((d == Direction.gauche) && e instanceof Bot && !((objetALaPosition(pCible) instanceof Echelle) ||(objetALaPosition(pCible) instanceof Mur))){
+                botRegardeDroite =0;
+                botRegardeGauche =1.5F;
             }
             if((e instanceof Colonne)&&(d==Direction.haut)&&((objetALaPosition(pCible) instanceof Heros)||(objetALaPosition(pCible) instanceof Bot))){
                 Point3D pCible2 = calculerPointCible(pCible, d);
@@ -309,9 +315,13 @@ public class Jeu<Integer> {
             //Changer Sprite + Afficher Game Over
             this.end=true;
         }
-        grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][(int) pCourant.getZ()] = null;
-        grilleEntites[(int) pCible.getX()][(int) pCible.getY()][(int) pCible.getZ()] = e;
-        map.put(e, pCible);
+        grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][0] = null;
+        if(!(objetALaPosition(pCible) instanceof Echelle))grilleEntites[(int) pCible.getX()][(int) pCible.getY()][1] = null;
+        grilleEntites[(int) pCible.getX()][(int) pCible.getY()][0] = e;
+        Point3D pCibleNew = new Point3D(pCible.getX(), pCible.getY(), 1);
+        map.put(e, pCibleNew);
+
+
     }
     /** Indique si p est contenu dans la grille
      */
