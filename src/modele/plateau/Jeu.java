@@ -207,10 +207,16 @@ public class Jeu<Integer> {
                 herosRegardeDroite =0;
                 herosRegardeGauche =1.5F;
             }
-            if((e instanceof Colonne)&&(d==Direction.haut)&&(objetALaPosition(pCible) instanceof Heros)){
+            if((e instanceof Colonne)&&(d==Direction.haut)&&((objetALaPosition(pCible) instanceof Heros)||(objetALaPosition(pCible) instanceof Bot))){
                 Point3D pCible2 = calculerPointCible(pCible, d);
-                deplacerEntite(pCourant, pCible, e);
-                deplacerEntite(pCible, pCible2, objetALaPosition(pCible));
+                if(objetALaPosition(pCible2) instanceof Mur){
+                    deplacerEntite(pCourant, pCible, e);
+                }
+                else {
+                    deplacerEntite(pCible, pCible2, objetALaPosition(pCible));
+                    deplacerEntite(pCourant, pCible, e);
+                }
+
             }
         }
         // Collisions avec le bot
