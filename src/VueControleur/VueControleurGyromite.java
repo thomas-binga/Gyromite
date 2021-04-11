@@ -141,23 +141,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     public void endScreen(){
         long endTime = System.nanoTime();
-        g.setFont(new Font("serif",Font.BOLD+Font.ITALIC,50));
         long time_taken=(endTime-startTime)/1000000000;
-        String tym=String.valueOf(time_taken);
-        g.setColor(Color.RED);
-        g.drawString("Game Over",300, 320);
-        g.drawString("GAME OVER", 100, 50);
-        g.drawString("SCORE= ",100, 100);
-        g.drawString(tym, 300, 100);
+        System.out.println(time_taken);
     }
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
     private void mettreAJourAffichage() {
-        if (jeu.end){
-            endScreen();
-            return;
-        }
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 for(int z = sizeZ-1; z>=0; z--) {
@@ -234,9 +224,14 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        mettreAJourAffichage();
-        if (jeu.herosRegardeDroite >0) jeu.herosRegardeDroite -= 0.5;
-        if (jeu.herosRegardeGauche >0) jeu.herosRegardeGauche -= 0.5;
+        if (jeu.end){
+            endScreen();
+            return;
+        } else {
+            mettreAJourAffichage();
+            if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
+            if (jeu.herosRegardeGauche > 0) jeu.herosRegardeGauche -= 0.5;
+        }
         /*
         SwingUtilities.invokeLater(new Runnable() {
                     @Override
