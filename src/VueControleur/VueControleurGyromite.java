@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import modele.deplacements.Controle4Directions;
-import modele.deplacements.Couleur;
 import modele.deplacements.Direction;
 import modele.deplacements.colControl;
 import modele.plateau.*;
@@ -38,9 +37,6 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoHero;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
-    private ImageIcon icoColonne;
-    private ImageIcon icoBasColonne;
-    private ImageIcon icoHautColonne;
     private ImageIcon icoRamassable;
     private ImageIcon icoEchelle;
     private ImageIcon icoHeroEchelle;
@@ -52,6 +48,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoColonne_bleu_haut;
     private ImageIcon icoHeroDroite;
     private ImageIcon icoHeroGauche;
+    private ImageIcon icoBot;
+    private ImageIcon icoBotDroite;
+    private ImageIcon icoBotGauche;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -101,6 +100,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoColonne_bleu_bas = chargerIcone("Images/hires/Colonne_bleu_bas.png");
         icoColonne_bleu_corps = chargerIcone("Images/hires/Colonne_bleu_corps.png");
         icoColonne_bleu_haut = chargerIcone("Images/hires/Colonne_bleu_haut.png");
+
+        icoBot= chargerIcone("Images/hires/Zombie.png");
+//        icoBotDroite = chargerIcone("Image/hires/");
+//        icoBotGauche = chargerIcone("Image/hires/");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -160,15 +163,19 @@ public class VueControleurGyromite extends JFrame implements Observer {
                 for(int z = sizeZ-1; z>=0; z--) {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
-                        if (jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
-                        else if (!jeu.HerosSurEchelle) tabJLabel[x][y].setIcon(icoHero);
-                        if(jeu.regardeDroite>0 && (!jeu.HerosSurEchelle)) {
+                        if (jeu.herosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
+                        else if (!jeu.herosSurEchelle) tabJLabel[x][y].setIcon(icoHero);
+                        if(jeu.herosRegardeDroite >0 && (!jeu.herosSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoHeroDroite);
                         }
-                        else if(jeu.regardeGauche>0 && (!jeu.HerosSurEchelle)) {
+                        else if(jeu.herosRegardeGauche >0 && (!jeu.herosSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoHeroGauche);
                         }
-                    } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
+                    }
+                    else if (jeu.getGrille()[x][y][z] instanceof Bot){
+                        tabJLabel[x][y].setIcon(icoBot);
+                    }
+                    else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
                         Colonne col = (Colonne) jeu.getGrille()[x][y][z];
@@ -228,8 +235,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         mettreAJourAffichage();
-        if (jeu.regardeDroite>0) jeu.regardeDroite -= 0.5;
-        if (jeu.regardeGauche>0) jeu.regardeGauche -= 0.5;
+        if (jeu.herosRegardeDroite >0) jeu.herosRegardeDroite -= 0.5;
+        if (jeu.herosRegardeGauche >0) jeu.herosRegardeGauche -= 0.5;
         /*
         SwingUtilities.invokeLater(new Runnable() {
                     @Override

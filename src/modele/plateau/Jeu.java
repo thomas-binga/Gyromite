@@ -26,6 +26,7 @@ public class Jeu<Integer> {
     private HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
+    private Bot zombie;
     private Colonne c1_cube1;
     private Colonne c1_cube2;
     private Colonne c1_cube3;
@@ -41,10 +42,13 @@ public class Jeu<Integer> {
     private Ordonnanceur ordonnanceur =  new Ordonnanceur( this);
 
     public int cptBombe = 0;
+    public int score = 0;
 
-    public boolean HerosSurEchelle=false;
-    public float regardeGauche = 0;
-    public float regardeDroite = 0;
+    public boolean herosSurEchelle =false;
+    public float herosRegardeGauche = 0;
+    public float herosRegardeDroite = 0;
+    public float botRegardeGauche = 0;
+    public float botRegardeDroite = 0;
 
     public Jeu() {
         initialisationDesEntites();
@@ -66,10 +70,14 @@ public class Jeu<Integer> {
     public Heros getHector() {
         return hector;
     }
+    public Bot getZombie(){return zombie;}
     
     private void initialisationDesEntites() {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
+        zombie = new Bot(this);
+        addEntite(zombie, 13,3,0);
+
         c1_cube1 = new Colonne(this, 'r');
         addEntite(c1_cube1, 6,8,0);
         c1_cube2 = new Colonne(this, 'r');
@@ -90,9 +98,12 @@ public class Jeu<Integer> {
 
         Gravite g = new Gravite();
         g.addEntiteDynamique(hector);
+        g.addEntiteDynamique(zombie);
         ordonnanceur.add(g);
 
         Controle4Directions.getInstance().addEntiteDynamique(hector);
+        IA.getInstance().addEntiteDynamique(zombie);
+
         colControl.getInstance().addEntiteDynamique(c1_cube1);
         colControl.getInstance().addEntiteDynamique(c1_cube2);
         colControl.getInstance().addEntiteDynamique(c1_cube3);
@@ -103,6 +114,7 @@ public class Jeu<Integer> {
 
 
         ordonnanceur.add(Controle4Directions.getInstance());
+        ordonnanceur.add(IA.getInstance());
         ordonnanceur.add(colControl.getInstance());
 
         // murs extérieurs horizontaux
@@ -182,18 +194,18 @@ public class Jeu<Integer> {
             if (Ramassable.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
 
             if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
-                HerosSurEchelle=true;
+                herosSurEchelle =true;
             }
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros && !(objetALaPosition(pCible) instanceof Mur)) {
-                HerosSurEchelle=false;
+                herosSurEchelle =false;
             }
             if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
-                regardeGauche=0;
-                regardeDroite= 1.5F;
+                herosRegardeGauche =0;
+                herosRegardeDroite = 1.5F;
             }
             else if ((d == Direction.gauche) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle) ||(objetALaPosition(pCible) instanceof Mur))){
-                regardeDroite=0;
-                regardeGauche=1.5F;
+                herosRegardeDroite =0;
+                herosRegardeGauche =1.5F;
             }
             if((e instanceof Colonne)&&(d==Direction.haut)&&(objetALaPosition(pCible) instanceof Heros)){
                 Point3D pCible2 = calculerPointCible(pCible, d);
@@ -201,6 +213,23 @@ public class Jeu<Integer> {
                 deplacerEntite(pCible, pCible2, objetALaPosition(pCible));
             }
         }
+        // Collisions avec le bot
+        if (objetALaPosition(pCible) instanceof Bot && objetALaPosition(pCourant) instanceof Heros)
+        {
+            end = true;
+        }
+        if (objetALaPosition(pCible) instanceof Heros && objetALaPosition(pCourant) instanceof Bot)
+        {
+            end = true;
+        }
+
+
+        if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
+        {
+            ((Bot) objetALaPosition(pCible)).vivant = false;
+            retour=true;
+        }
+
 
 
         if (contenuDansGrille(pCible) && ((objetALaPosition(pCible)==null)||(objetALaPosition(pCible).peutEtreTraverse())||(objetALaPosition(pCible).peutEtreEcrase()))) { // a adapter (collisions murs, etc.)
@@ -208,7 +237,7 @@ public class Jeu<Integer> {
             switch (d) {
                 case bas:
                 case haut:
-                    if ((e instanceof Heros) &&cmptDeplV.get(e) == null) {
+                    if (cmptDeplV.get(e) == null) {
                         cmptDeplV.put(e, 1);
 
                         retour = true;

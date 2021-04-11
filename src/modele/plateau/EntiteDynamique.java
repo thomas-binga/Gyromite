@@ -13,4 +13,5 @@ public abstract class EntiteDynamique extends Entite {
     }
     public Entite regarderDansLaDirection(Direction d) {return jeu.regarderDansLaDirection(this, d);}
     public boolean peutEcraser(){return true;}
+    public boolean vivant = true;
 }
