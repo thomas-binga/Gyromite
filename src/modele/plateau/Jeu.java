@@ -46,10 +46,15 @@ public class Jeu<Integer> {
     public int score = 0;
 
     public boolean herosSurEchelle =false;
+    public boolean botSurEchelle = false;
+    public boolean botSurBombe = false;
+    public boolean botSurBonus = false;
+
     public float herosRegardeGauche = 0;
     public float herosRegardeDroite = 0;
     public float botRegardeGauche = 0;
     public float botRegardeDroite = 0;
+
 
     public Jeu() {
         initialisationDesEntites();
@@ -77,7 +82,7 @@ public class Jeu<Integer> {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
         zombie = new Bot(this);
-        addEntite(zombie, 13,3,0);
+        addEntite(zombie, 13,3,1);
 
         c1_cube1 = new Colonne(this, 'r');
         addEntite(c1_cube1, 6,8,0);
@@ -140,8 +145,10 @@ public class Jeu<Integer> {
         addEntite(new Mur(this), 13, 4,0);
         addEntite(new Mur(this), 14, 4,0);
 
-        addEntite(new Ramassable(this),7,8,0);
-        addEntite(new Ramassable(this),14,3,0);
+        addEntite(new Bombe(this),7,8,0);
+        addEntite(new Bombe(this),14,3,0);
+
+        addEntite(new Bonus(this), 15,8,0);
 
         addEntite(new Echelle(this),8,8,1);
         addEntite(new Echelle(this),8,7,1);
@@ -188,17 +195,31 @@ public class Jeu<Integer> {
 //                deplacerEntite(pCourant, pCible, e);
 //                return true;
 //            }
-            if (objetALaPosition(pCible) instanceof Ramassable) {
+            if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Ramassable) {
                 cptBombe++;
                 System.out.println(cptBombe);
             }
-            if (Ramassable.getTotalBombes()==cptBombe) win=true;
+            if ((objetALaPosition(pCourant) instanceof Bot) && objetALaPosition(pCible) instanceof Ramassable) {
+                if(objetALaPosition(pCible) instanceof Bombe) botSurBombe = true;
+                else botSurBonus= true;
+            }
+            else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot){
+                botSurBombe = false;
+                botSurBonus = false;
+            }
+            if (Bombe.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
 
             if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros) {
                 herosSurEchelle =true;
             }
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Heros && !(objetALaPosition(pCible) instanceof Mur)) {
                 herosSurEchelle =false;
+            }
+            if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot) {
+                botSurEchelle =true;
+            }
+            else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot && !(objetALaPosition(pCible) instanceof Mur)) {
+                botSurEchelle =false;
             }
             if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
                 herosRegardeGauche =0;

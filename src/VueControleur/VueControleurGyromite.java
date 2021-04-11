@@ -37,9 +37,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoHero;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
-    private ImageIcon icoRamassable;
+    private ImageIcon icoBombe;
     private ImageIcon icoEchelle;
     private ImageIcon icoHeroEchelle;
+    private ImageIcon icoBotEchelle;
     private ImageIcon icoColonne_rouge_bas;
     private ImageIcon icoColonne_rouge_corps;
     private ImageIcon icoColonne_rouge_haut;
@@ -51,6 +52,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoBot;
     private ImageIcon icoBotDroite;
     private ImageIcon icoBotGauche;
+    private ImageIcon icoBonus;
+    private ImageIcon icoBotSurBombe;
+    private ImageIcon icoBotSurBonus;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -91,7 +95,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoHeroGauche = chargerIcone("Images/hires/HectorGauche.png");
         icoVide = chargerIcone("Images/hires/Vide.png");
         icoMur = chargerIcone("Images/hires/Mur.png");
-        icoRamassable = chargerIcone("Images/hires/Bombe.png");
+        icoBombe = chargerIcone("Images/hires/Bombe.png");
         icoEchelle = chargerIcone("Images/hires/Echelle.png");
         icoHeroEchelle = chargerIcone("Images/hires/HeroSurEchelle.png");
 
@@ -106,6 +110,11 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoBot= chargerIcone("Images/hires/Zombie.png");
 //        icoBotDroite = chargerIcone("Image/hires/");
 //        icoBotGauche = chargerIcone("Image/hires/");
+
+//        icoBonus = chargerIcone("/Images/hires/Emeraude.png");
+//        icoBotEchelle = chargerIcone("Image/hires/BotSurEchelle.png");
+//        icoBotSurBombe = chargerIcone("Image/hires/");
+//        icoBotSurBonus = chargerIcone("Image/hires/");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
@@ -184,7 +193,18 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         }
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Bot){
-                        tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBotEchelle);
+                        else if (!jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBot);
+                        if(jeu.botRegardeDroite >0 && (!jeu.botSurEchelle)) {
+                            tabJLabel[x][y].setIcon(icoBotDroite);
+                        }
+                        else if(jeu.botRegardeGauche >0 && (!jeu.botSurEchelle)) {
+                            tabJLabel[x][y].setIcon(icoBotGauche);
+                        }
+                        if (jeu.botSurBombe) tabJLabel[x][y].setIcon(icoBotSurBombe);
+                        else if (!jeu.botSurBombe) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.botSurBonus) tabJLabel[x][y].setIcon(icoBotSurBonus);
+                        else if (!jeu.botSurBonus) tabJLabel[x][y].setIcon(icoBot);
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
@@ -204,9 +224,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
                             if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_corps);
                         }
-                    } else if (jeu.getGrille()[x][y][z] instanceof Ramassable) {
-                        tabJLabel[x][y].setIcon(icoRamassable);
-                    } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
+                    } else if (jeu.getGrille()[x][y][z] instanceof Bombe) {
+                        tabJLabel[x][y].setIcon(icoBombe);
+                    }
+                    else if (jeu.getGrille()[x][y][z] instanceof Bonus){
+                        tabJLabel[x][y].setIcon(icoBonus);
+                    }
+                    else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
                         tabJLabel[x][y].setIcon(icoEchelle);
                     } else if(z==1 && y<10){
                         tabJLabel[x][y].setIcon(icoVide);
@@ -217,12 +241,12 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         tabJLabel[0][10].setForeground(Color.WHITE);
                     } else if(x==2 && y==10){
                         tabJLabel[1][10].setOpaque(true);
-                        tabJLabel[1][10].setText(String.valueOf(jeu.cptBombe+" / "+Ramassable.getTotalBombes()));
+                        tabJLabel[1][10].setText(String.valueOf(jeu.cptBombe+" / "+Bombe.getTotalBombes()));
                         tabJLabel[1][10].setBackground(Color.BLACK);
                         tabJLabel[1][10].setForeground(Color.GREEN);
                     }
                     else if(x==4 && y==10){
-                        if (jeu.cptBombe==Ramassable.getTotalBombes()){
+                        if (jeu.cptBombe==Bombe.getTotalBombes()){
                             tabJLabel[4][10].setOpaque(true);
                             tabJLabel[4][10].setText(String.valueOf("Vous avez gagné !"));
                             tabJLabel[4][10].setBackground(Color.BLACK);
