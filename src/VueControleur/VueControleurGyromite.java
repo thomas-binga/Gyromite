@@ -55,7 +55,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoBonus;
     private ImageIcon icoBotSurBombe;
     private ImageIcon icoBotSurBonus;
-    private ImageIcon imgFinGagne,imgFinPerdu;
+    private ImageIcon imgFinGagne;
+    private ImageIcon imgFinPerdu;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -200,6 +201,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         else if (!jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBot);
                         if(jeu.botRegardeDroite >0 && (!jeu.botSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoBotDroite);
+                            System.out.println("bot à droite");
                         }
                         else if(jeu.botRegardeGauche >0 && (!jeu.botSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoBotGauche);
@@ -278,6 +280,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
             mettreAJourAffichage();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
             if (jeu.herosRegardeGauche > 0) jeu.herosRegardeGauche -= 0.5;
+            if(jeu.botRegardeGauche > 0) jeu.botRegardeGauche -= 0.5;
+            if(jeu.botRegardeDroite > 0) jeu.botRegardeDroite -= 0.5;
+
         }
         /*
         SwingUtilities.invokeLater(new Runnable() {

@@ -16,7 +16,7 @@ public class IA extends RealisateurDeDeplacement {
     }
 
     public void setDirectionCourante() {
-        double rand = 0 + (Math.random() * (10));
+        double rand = 0 + (Math.random() * (15));
 
         if(rand <2 ){
             directionCourante = Direction.bas;
@@ -44,27 +44,27 @@ public class IA extends RealisateurDeDeplacement {
             setDirectionCourante();}
 
         for (EntiteDynamique e : lstEntitesDynamiques) {
-            if(e.vivant)
+            if(e.vivant && directionCourante!=null)
             {
                 switch (directionCourante) {
                     case haut:Entite eHaut = e.regarderDansLaDirection(Direction.haut);
-                        if(eHaut ==null || eHaut.peutPermettreDeMonterDescendre()){
+                        if(eHaut ==null || eHaut.peutPermettreDeMonterDescendre() || eHaut.peutEtreEcrase()){
                             if( (e.regarderDansLaDirection(Direction.haut) != null && e.regarderDansLaDirection(Direction.haut).peutServirDeSupport()))
                             {
-                                if (e.avancerDirectionChoisie(directionCourante))
+                                if ((directionCourante!=null) && e.avancerDirectionChoisie(directionCourante))
                                     ret = true;
                             }
                         }
                         break;
 
                     case bas: Entite eBas = e.regarderDansLaDirection(Direction.bas);
-                        if (eBas == null|| eBas.peutPermettreDeMonterDescendre()) {
+                        if (eBas == null|| eBas.peutPermettreDeMonterDescendre() || eBas.peutEtreEcrase()) {
                             if (e.avancerDirectionChoisie(Direction.bas)){
                                 ret = true;}
                         }   break;
                     case gauche:
                         Entite eGauche = e.regarderDansLaDirection(Direction.gauche);
-                        if (eGauche == null || eGauche.peutPermettreDeMonterDescendre()) {
+                        if (eGauche == null || eGauche.peutPermettreDeMonterDescendre() || eGauche.peutEtreEcrase()) {
                             if (e.avancerDirectionChoisie(Direction.gauche)){
                                 ret = true;}
                             else {e.avancerDirectionChoisie(Direction.droite);}}
@@ -72,7 +72,7 @@ public class IA extends RealisateurDeDeplacement {
 
                     case droite:
                         Entite eDroite = e.regarderDansLaDirection(Direction.droite);
-                        if (eDroite == null  || eDroite.peutPermettreDeMonterDescendre()) {
+                        if (eDroite == null  || eDroite.peutPermettreDeMonterDescendre()|| eDroite.peutEtreEcrase()) {
                             if (e.avancerDirectionChoisie(Direction.droite)){
                                 ret = true;}
                             else {e.avancerDirectionChoisie(Direction.gauche);}}

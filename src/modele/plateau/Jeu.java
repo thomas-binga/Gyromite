@@ -141,7 +141,7 @@ public class Jeu<Integer> {
         addEntite(new Bombe(this),7,8,1);
         addEntite(new Bombe(this),14,3,1);
 
-        addEntite(new Bonus(this), 15,8,1);
+        addEntite(new Bonus(this), 16,8,1);
 
         addEntite(new Echelle(this),8,8,1);
         addEntite(new Echelle(this),8,7,1);
@@ -316,7 +316,10 @@ public class Jeu<Integer> {
             this.end=true;
         }
         grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][0] = null;
-        if(!(objetALaPosition(pCible) instanceof Echelle))grilleEntites[(int) pCible.getX()][(int) pCible.getY()][1] = null;
+
+        if((e!=null) && e instanceof Heros && ((objetALaPosition(pCible) != null) && (objetALaPosition(pCible).peutEtreTraverse()) && !(objetALaPosition(pCible) instanceof Echelle))){
+            grilleEntites[(int) pCible.getX()][(int) pCible.getY()][1] = null;
+        }
         grilleEntites[(int) pCible.getX()][(int) pCible.getY()][0] = e;
         Point3D pCibleNew = new Point3D(pCible.getX(), pCible.getY(), 1);
         map.put(e, pCibleNew);
