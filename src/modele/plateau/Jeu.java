@@ -47,6 +47,7 @@ public class Jeu<Integer> {
     public float herosRegardeDroite = 0;
     public float botRegardeGauche = 0;
     public float botRegardeDroite = 0;
+    public double fleche1Timer = FlecheControl.getTimer();
 
 
     public Jeu() {
@@ -92,6 +93,11 @@ public class Jeu<Integer> {
         Colonne c2_cube4 = new Colonne(this, 'b');
         addEntite(c2_cube4, 15,4,0);
 
+        Dispenser disp1 = new Dispenser(this, 'd');
+        addEntite(disp1, 1,2,1);
+        Fleche fleche1 = new Fleche(this, 'd', new Point3D(1,2,0));
+        addEntite(fleche1, 1,2,0);
+
 
 
 
@@ -111,10 +117,12 @@ public class Jeu<Integer> {
         colControl.getInstance().addEntiteDynamique(c2_cube3);
         colControl.getInstance().addEntiteDynamique(c2_cube4);
 
+        FlecheControl.getInstance().addEntiteDynamique(fleche1);
 
         ordonnanceur.add(Controle4Directions.getInstance());
         ordonnanceur.add(IA.getInstance());
         ordonnanceur.add(colControl.getInstance());
+        ordonnanceur.add(FlecheControl.getInstance());
 
         // murs extérieurs horizontaux
         for (int x = 0; x < 20; x++) {
@@ -156,6 +164,8 @@ public class Jeu<Integer> {
         addEntite(new Echelle(this),4,8,1);
 
 
+
+
     }
 
     private void addEntite(Entite e, int x, int y, int z) {
@@ -184,10 +194,8 @@ public class Jeu<Integer> {
 
         if((e instanceof Heros) && !(((Heros) e).vivant)) return false;
         if(contenuDansGrille(pCible)){
-//            if ((e instanceof Colonne) && !((Colonne) e).bord) {
-//                deplacerEntite(pCourant, pCible, e);
-//                return true;
-//            }
+
+            //Gestion ramassables
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bombe) {
                 cptBombe++;
                 score+=100;
@@ -201,6 +209,8 @@ public class Jeu<Integer> {
                 if(objetALaPosition(pCible) instanceof Bombe) botSurBombe = true;
                 else botSurBonus= true;
             }
+
+            //Gestion Echelle
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot){
                 botSurBombe = false;
                 botSurBonus = false;
@@ -219,6 +229,8 @@ public class Jeu<Integer> {
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot && !(objetALaPosition(pCible) instanceof Mur)) {
                 botSurEchelle =false;
             }
+
+            //Gestion direction gauche/droite
             if((d == Direction.droite) && e instanceof Heros && !((objetALaPosition(pCible) instanceof Echelle)||(objetALaPosition(pCible) instanceof Mur))){
                 herosRegardeGauche =0;
                 herosRegardeDroite = 1.5F;
@@ -235,6 +247,8 @@ public class Jeu<Integer> {
                 botRegardeDroite =0;
                 botRegardeGauche =1.5F;
             }
+
+            //Gestion Colonne qui souleve le Heros
             if((e instanceof Colonne)&&(d==Direction.haut)&&((objetALaPosition(pCible) instanceof Heros)||(objetALaPosition(pCible) instanceof Bot))){
                 Point3D pCible2 = calculerPointCible(pCible, d);
                 if(objetALaPosition(pCible2) instanceof Mur){
@@ -246,23 +260,39 @@ public class Jeu<Integer> {
                 }
 
             }
-        }
-        // Collisions avec le bot
-        if (objetALaPosition(pCible) instanceof Bot && objetALaPosition(pCourant) instanceof Heros)
-        {
-            end = true;
-        }
-        if (objetALaPosition(pCible) instanceof Heros && objetALaPosition(pCourant) instanceof Bot)
-        {
-            end = true;
-        }
+
+            //Gestion Collisions Bot
+            if (objetALaPosition(pCible) instanceof Bot && objetALaPosition(pCourant) instanceof Heros)
+            {
+                end = true;
+            }
+            if (objetALaPosition(pCible) instanceof Heros && objetALaPosition(pCourant) instanceof Bot)
+            {
+                end = true;
+            }
+            if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
+            {
+                ((Bot) objetALaPosition(pCible)).vivant = false;
+                retour=true;
+            }
+
+            //Gestion Fleche
+            if(fleche1Timer == 0){
+                FlecheControl.getInstance().setDirectionCourante(Direction.droite);
+            }
+            if ((objetALaPosition(pCible) instanceof Bot) && objetALaPosition(pCourant) instanceof Fleche){
+                ((EntiteDynamique) objetALaPosition(pCible)).vivant = false;
+            }
+            if((objetALaPosition(pCible) instanceof Colonne || objetALaPosition(pCible) instanceof Mur) && e instanceof Fleche){
+                deplacerEntite(pCourant, ((Fleche) objetALaPosition(pCourant)).dispPos, e);
+                System.out.println("téleportation !");
+                FlecheControl.getInstance().resetDirection();
+                fleche1Timer = FlecheControl.getTimer();
+            }
 
 
-        if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
-        {
-            ((Bot) objetALaPosition(pCible)).vivant = false;
-            retour=true;
         }
+
 
 
 
@@ -310,7 +340,7 @@ public class Jeu<Integer> {
     }
     
     private void deplacerEntite(Point3D pCourant, Point3D pCible, Entite e) {
-        if((objetALaPosition(pCible) instanceof Heros) && e instanceof Colonne){
+        if((objetALaPosition(pCible) instanceof Heros) && ((e instanceof Colonne) || (e instanceof Fleche))){
             ((Heros) objetALaPosition(pCible)).vivant = false;
             //Changer Sprite + Afficher Game Over
             this.end=true;
