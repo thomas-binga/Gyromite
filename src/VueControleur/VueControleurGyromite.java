@@ -206,10 +206,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         else if(jeu.botRegardeGauche >0 && (!jeu.botSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoBotGauche);
                         }
-                        if (jeu.botSurBombe) tabJLabel[x][y].setIcon(icoBotSurBombe);
-                        else if (!jeu.botSurBombe) tabJLabel[x][y].setIcon(icoBot);
-                        if (jeu.botSurBonus) tabJLabel[x][y].setIcon(icoBotSurBonus);
-                        else if (!jeu.botSurBonus) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.botSurBombe && (!jeu.botSurEchelle) && (!jeu.botSurBonus) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBombe);
+                        else if ((!jeu.botSurBombe) && (!jeu.botSurEchelle) && (!jeu.botSurBonus) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.botSurBonus && (!jeu.botSurEchelle) && (!jeu.botSurBombe) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBonus);
+                        else if ((!jeu.botSurBonus) && (!jeu.botSurEchelle) && (!jeu.botSurBombe) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
