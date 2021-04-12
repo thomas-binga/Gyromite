@@ -199,6 +199,7 @@ public class Jeu<Integer> {
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bombe) {
                 cptBombe++;
                 score+=100;
+                if (cptBombe == 2) win=true; //A modifier
                 System.out.println(cptBombe);
             }
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bonus) {
