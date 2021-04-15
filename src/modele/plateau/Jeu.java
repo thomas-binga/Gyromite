@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class Jeu<Integer> {
 
     public static final int SIZE_X = 20;
-    public static final int SIZE_Y = 11;
+    public static final int SIZE_Y = 10;
     public static final int SIZE_Z = 2;
     public boolean loose = false;
     public boolean win = false;

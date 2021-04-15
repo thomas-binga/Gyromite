@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.BorderFactory;
 
 import javafx.geometry.Point3D;
 import modele.deplacements.Controle4Directions;
@@ -74,6 +75,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
     JComponent grilleJLabels;
+    JPanel menuJeu = new JPanel();
+    JLabel txtNbBombes = new JLabel();
+    JLabel txtNbScore = new JLabel();
+    JLabel txtStatut = new JLabel();
 
 
     public VueControleurGyromite(Jeu _jeu) {
@@ -161,7 +166,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("Gyromite");
-        setSize(1280, 704);
+        setSize(1280, 754);
+        setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
         grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
@@ -177,6 +183,8 @@ public class VueControleurGyromite extends JFrame implements Observer {
             }
         }
         add(grilleJLabels);
+        add(menuJeu);
+        getContentPane().setBackground(Color.BLACK);
     }
 
     public void endScreen(){
@@ -200,10 +208,58 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
 
         remove(grilleJLabels);
+        remove(menuJeu);
         revalidate();
         add(endScreenPanel);
 
 
+    }
+
+    public void menuJeu() {
+        //Menu de jeu
+        menuJeu.setLayout(new BoxLayout(menuJeu,BoxLayout.X_AXIS));
+        menuJeu.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        menuJeu.setPreferredSize(new Dimension(1250, 60));
+        menuJeu.setBackground(Color.DARK_GRAY);
+
+        JLabel txtBombes = new JLabel("Bombes ramassées :  ");
+        txtBombes.setForeground(Color.WHITE);
+        txtBombes.setFont(new Font("Verdana", Font.PLAIN, 14));
+
+
+        txtNbBombes.setText(String.valueOf(jeu.cptBombe));
+        txtNbBombes.setForeground(Color.CYAN);
+        txtNbBombes.setFont(new Font("Verdana", Font.PLAIN, 16));
+
+        JLabel txtScore = new JLabel("SCORE :  ");
+        txtScore.setForeground(Color.WHITE);
+        txtScore.setFont(new Font("Verdana", Font.PLAIN, 14));
+
+        txtNbScore.setText(String.valueOf(jeu.score)+"        ");
+        txtNbScore.setForeground(Color.CYAN);
+        txtNbScore.setFont(new Font("Verdana", Font.PLAIN, 16));
+
+        menuJeu.add(txtBombes);
+        menuJeu.add(txtNbBombes);
+        menuJeu.add(new JLabel("  ------  "));
+        menuJeu.add(txtScore);
+        menuJeu.add(txtNbScore);
+        menuJeu.add(new JLabel("  -------------------------  "));
+
+        if (jeu.cptBombe!=Bombe.getTotalBombes()){
+            txtStatut.setText("Jeu en cours...");
+            txtStatut.setForeground(Color.CYAN);
+            txtStatut.setFont(new Font("Verdana", Font.PLAIN, 14));
+            menuJeu.add(txtStatut);
+            menuJeu.add(new JLabel("  -------------------------  "));
+        }
+        else {
+            txtStatut.setText("Fin de partie!");
+            txtStatut.setForeground(Color.RED);
+            txtStatut.setFont(new Font("Verdana", Font.PLAIN, 14));
+            menuJeu.add(txtStatut);
+            menuJeu.add(new JLabel("  -------------------------  "));
+        }
     }
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
@@ -211,65 +267,58 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private void mettreAJourAffichage() {
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                for(int z = sizeZ-1; z>=0; z--) {
+                for (int z = sizeZ - 1; z >= 0; z--) {
                     if (jeu.getGrille()[x][y][z] instanceof Heros) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
                         // System.out.println("Héros !");
                         if (jeu.herosSurEchelle) tabJLabel[x][y].setIcon(icoHeroEchelle);
                         else if (!jeu.herosSurEchelle) tabJLabel[x][y].setIcon(icoHero);
-                        if(jeu.herosRegardeDroite >0 && (!jeu.herosSurEchelle)) {
+                        if (jeu.herosRegardeDroite > 0 && (!jeu.herosSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoHeroDroite);
-                        }
-                        else if(jeu.herosRegardeGauche >0 && (!jeu.herosSurEchelle)) {
+                        } else if (jeu.herosRegardeGauche > 0 && (!jeu.herosSurEchelle)) {
                             tabJLabel[x][y].setIcon(icoHeroGauche);
                         }
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Bot){
-                        if (jeu.getBotSurEchelle(x,y,0)) tabJLabel[x][y].setIcon(icoBotEchelle);
-                        else if (!jeu.getBotSurEchelle(x,y,0)) tabJLabel[x][y].setIcon(icoBot);
-                        if(jeu.botRegardeDroite >0 && (!jeu.getBotSurEchelle(x,y,0))) {
+                    } else if (jeu.getGrille()[x][y][z] instanceof Bot) {
+                        if (jeu.getBotSurEchelle(x, y, 0)) tabJLabel[x][y].setIcon(icoBotEchelle);
+                        else if (!jeu.getBotSurEchelle(x, y, 0)) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.botRegardeDroite > 0 && (!jeu.getBotSurEchelle(x, y, 0))) {
                             tabJLabel[x][y].setIcon(icoBotDroite);
-                        }
-                        else if(jeu.botRegardeGauche >0 && (!jeu.getBotSurEchelle(x,y,0))) {
+                        } else if (jeu.botRegardeGauche > 0 && (!jeu.getBotSurEchelle(x, y, 0))) {
                             tabJLabel[x][y].setIcon(icoBotGauche);
                         }
-                        if (jeu.getBotSurBombe(x,y,0) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBonus(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBombe);
-                        else if ((!jeu.getBotSurBombe(x,y,0)) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBonus(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
-                        if (jeu.getBotSurBonus(x,y,0) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBombe(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBonus);
-                        else if ((!jeu.getBotSurBonus(x,y,0)) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBombe(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Mur) {
+                        if (jeu.getBotSurBombe(x, y, 0) && (!jeu.getBotSurEchelle(x, y, 0)) && (!jeu.getBotSurBonus(x, y, 0)) && (jeu.botRegardeGauche == 0) && (jeu.botRegardeDroite == 0))
+                            tabJLabel[x][y].setIcon(icoBotSurBombe);
+                        else if ((!jeu.getBotSurBombe(x, y, 0)) && (!jeu.getBotSurEchelle(x, y, 0)) && (!jeu.getBotSurBonus(x, y, 0)) && (jeu.botRegardeGauche == 0) && (jeu.botRegardeDroite == 0))
+                            tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.getBotSurBonus(x, y, 0) && (!jeu.getBotSurEchelle(x, y, 0)) && (!jeu.getBotSurBombe(x, y, 0)) && (jeu.botRegardeGauche == 0) && (jeu.botRegardeDroite == 0))
+                            tabJLabel[x][y].setIcon(icoBotSurBonus);
+                        else if ((!jeu.getBotSurBonus(x, y, 0)) && (!jeu.getBotSurEchelle(x, y, 0)) && (!jeu.getBotSurBombe(x, y, 0)) && (jeu.botRegardeGauche == 0) && (jeu.botRegardeDroite == 0))
+                            tabJLabel[x][y].setIcon(icoBot);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
                     } else if (jeu.getGrille()[x][y][z] instanceof Colonne) {
                         Colonne col = (Colonne) jeu.getGrille()[x][y][z];
-                        if(!(jeu.getGrille()[x][y-1][z] instanceof Colonne)){
-                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_haut);
+                        if (!(jeu.getGrille()[x][y - 1][z] instanceof Colonne)) {
+                            if (col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_haut);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_haut);
-                        }
-                        else if(!(jeu.getGrille()[x][y+1][z] instanceof Colonne)){
-                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_bas);
+                        } else if (!(jeu.getGrille()[x][y + 1][z] instanceof Colonne)) {
+                            if (col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_bas);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_bas);
-                        }
-                        else {
-                            if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
+                        } else {
+                            if (col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_corps);
                         }
                     } else if (jeu.getGrille()[x][y][z] instanceof Bombe) {
                         tabJLabel[x][y].setIcon(icoBombe);
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Bonus){
+                    } else if (jeu.getGrille()[x][y][z] instanceof Bonus) {
                         tabJLabel[x][y].setIcon(icoBonus);
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
+                    } else if (jeu.getGrille()[x][y][z] instanceof Echelle) {
                         tabJLabel[x][y].setIcon(icoEchelle);
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Dispenser){
-                        if(((Dispenser) jeu.getGrille()[x][y][z]).sens == 'g'){
+                    } else if (jeu.getGrille()[x][y][z] instanceof Dispenser) {
+                        if (((Dispenser) jeu.getGrille()[x][y][z]).sens == 'g') {
                             tabJLabel[x][y].setIcon(icoDispenserGauche);
-                        }
-                        else tabJLabel[x][y].setIcon(icoDispenserDroite);
-                    }
-                    else if (jeu.getGrille()[x][y][z] instanceof Fleche && !(jeu.getGrille()[x][y][1] instanceof Dispenser)){
-                        if(((Fleche) jeu.getGrille()[x][y][z]).sens == 'g'){
+                        } else tabJLabel[x][y].setIcon(icoDispenserDroite);
+                    } else if (jeu.getGrille()[x][y][z] instanceof Fleche && !(jeu.getGrille()[x][y][1] instanceof Dispenser)) {
+                        if (((Fleche) jeu.getGrille()[x][y][z]).sens == 'g') {
                             if(jeu.getGrille()[x][y][1] instanceof Echelle){
                                 tabJLabel[x][y].setIcon(icoFlecheGaucheDevantEchelle);
                             }
@@ -280,8 +329,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                                 tabJLabel[x][y].setIcon(icoFlecheGaucheDevantBonus);
                             }
                             else tabJLabel[x][y].setIcon(icoFlecheGauche);
-                        }
-                        else{
+                        } else {
                             if(jeu.getGrille()[x][y][1] instanceof Echelle){
                                 tabJLabel[x][y].setIcon(icoFlecheDroiteDevantEchelle);
                             }
@@ -293,40 +341,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
                             }
                             else tabJLabel[x][y].setIcon(icoFlecheDroite);
                         }
-                    }
-                    else if(z==1 && y<10){
+                    } else if (z == 1 && y < 10) {
                         tabJLabel[x][y].setIcon(icoVide);
-                    } else if(x==0 && y==10){
-                        tabJLabel[0][10].setOpaque(true);
-                        tabJLabel[0][10].setText("<html>Bombes<br/>ramassées</html>");
-                        tabJLabel[0][10].setBackground(Color.BLACK);
-                        tabJLabel[0][10].setForeground(Color.WHITE);
-                    } else if(x==2 && y==10){
-                        tabJLabel[1][10].setOpaque(true);
-                        tabJLabel[1][10].setText(String.valueOf(jeu.cptBombe+" / "+Bombe.getTotalBombes()));
-                        tabJLabel[1][10].setBackground(Color.BLACK);
-                        tabJLabel[1][10].setForeground(Color.GREEN);
-                    }
-                    else if(x==4 && y==10){
-                        if (jeu.cptBombe==Bombe.getTotalBombes()){
-                            tabJLabel[4][10].setOpaque(true);
-                            tabJLabel[4][10].setText(String.valueOf("Vous avez gagné !"));
-                            tabJLabel[4][10].setBackground(Color.BLACK);
-                            tabJLabel[4][10].setForeground(Color.GREEN);
-                        }
-                        else {
-                            tabJLabel[4][10].setOpaque(true);
-                            tabJLabel[4][10].setText(String.valueOf("Jeu en cours"));
-                            tabJLabel[4][10].setBackground(Color.BLACK);
-                            tabJLabel[4][10].setForeground(Color.CYAN);
-                        }
-
                     }
                 }
             }
+
         }
-
-
     }
 
     @Override
@@ -336,6 +357,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
             jeu.end = true;
         } else {
             mettreAJourAffichage();
+            menuJeu();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
             if (jeu.herosRegardeGauche > 0) jeu.herosRegardeGauche -= 0.5;
             if(jeu.botRegardeGauche > 0) jeu.botRegardeGauche -= 0.5;
