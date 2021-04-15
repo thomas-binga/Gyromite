@@ -36,6 +36,10 @@ public class Jeu<Integer> {
     private Bot zombie2;
 
 
+    private Thread tMusic = new Thread(() -> {
+        MusicPlayer m = new MusicPlayer("Minecraft.mp3", true);
+        m.main(new String[]{});
+    });
     private final HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
     private final Entite[][][] grilleEntites = new Entite[SIZE_X][SIZE_Y][SIZE_Z]; // permet de récupérer une entité à partir de ses coordonnées
 
@@ -43,6 +47,7 @@ public class Jeu<Integer> {
 
     public int cptBombe = 0;
     public int score = 0;
+    public int nbrBombes = 4;
 
     public boolean herosSurEchelle =false;
     public HashMap<Point3D, Boolean> botSurEchelle = new HashMap<Point3D, Boolean>();
@@ -130,7 +135,7 @@ public class Jeu<Integer> {
     public void start(long _pause) {
         System.out.println("caca");
         ordonnanceur.start(_pause);
-        PlayMusic("Minecraft.mp3", true);
+        tMusic.start();
     }
     
     public Entite[][][] getGrille() {
@@ -311,8 +316,12 @@ public class Jeu<Integer> {
             //Gestion ramassables
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bombe) {
                 cptBombe++;
+                PlayMusic("tnt.mp3", false);
                 score+=100;
-                if (cptBombe == 4) win=true; //A modifier
+                if (cptBombe == nbrBombes){
+                    PlayMusic("tada.mp3", false);
+                    win=true;
+                }
             }
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bonus) {
                 score+=200;
@@ -377,10 +386,12 @@ public class Jeu<Integer> {
             //Gestion Collisions Bot
             if (objetALaPosition(pCible) instanceof Bot && objetALaPosition(pCourant) instanceof Heros)
             {
+                PlayMusic("ooh.mp3", false);
                 loose = true;
             }
             if (objetALaPosition(pCible) instanceof Heros && objetALaPosition(pCourant) instanceof Bot)
             {
+                PlayMusic("ooh.mp3", false);
                 loose = true;
             }
             if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
@@ -399,6 +410,7 @@ public class Jeu<Integer> {
             }
             if ((objetALaPosition(pCible) instanceof Bot) && objetALaPosition(pCourant) instanceof Fleche){
                 ((EntiteDynamique) objetALaPosition(pCible)).vivant = false;
+                PlayMusic("mk.mp3", false);
             }
             if((objetALaPosition(pCible) instanceof Colonne || objetALaPosition(pCible) instanceof Mur) && e instanceof Fleche){
                 deplacerEntite(pCourant, ((Fleche) objetALaPosition(pCourant)).dispPos, e);
@@ -480,6 +492,7 @@ public class Jeu<Integer> {
         if((objetALaPosition(pCible) instanceof Heros) && ((e instanceof Colonne) || (e instanceof Fleche))){
             ((Heros) objetALaPosition(pCible)).vivant = false;
             //Changer Sprite + Afficher Game Over
+            PlayMusic("ooh.mp3", false);
             this.loose =true;
         }
         grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][0] = null;
