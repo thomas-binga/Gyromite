@@ -29,7 +29,8 @@ public class Jeu<Integer> {
     private final HashMap<Entite, java.lang.Integer> cmptDeplV = new HashMap<Entite, java.lang.Integer>();
 
     private Heros hector;
-    private Bot zombie;
+    private Bot zombie1;
+    private Bot zombie2;
 
 
     private final HashMap<Entite, Point3D> map = new  HashMap<Entite, Point3D>(); // permet de récupérer la position d'une entité à partir de sa référence
@@ -41,9 +42,9 @@ public class Jeu<Integer> {
     public int score = 0;
 
     public boolean herosSurEchelle =false;
-    public boolean botSurEchelle = false;
-    public boolean botSurBombe = false;
-    public boolean botSurBonus = false;
+    public HashMap<Point3D, Boolean> botSurEchelle = new HashMap<Point3D, Boolean>();
+    public HashMap<Point3D, Boolean> botSurBombe = new HashMap<Point3D, Boolean>();
+    public HashMap<Point3D, Boolean> botSurBonus = new HashMap<Point3D, Boolean>();
 
     public float herosRegardeGauche = 0;
     public float herosRegardeDroite = 0;
@@ -61,6 +62,47 @@ public class Jeu<Integer> {
         cmptDeplV.clear();
     }
 
+    private void initBotSprites(){
+        for (int x = 0; x < SIZE_X; x++) {
+            for (int y = 0; y < SIZE_Y; y++) {
+                for (int z = SIZE_Z - 1; z >= 0; z--) {
+                    Point3D p = new Point3D(x,y,0);
+                    if(grilleEntites[x][y][z] instanceof Echelle){
+                        botSurEchelle.put(p, true);
+                    }
+                    else if (grilleEntites[x][y][z] instanceof Bombe){
+                        botSurBombe.put(p, true);
+                    }
+                    else if (grilleEntites[x][y][z] instanceof Bonus){
+                        botSurBonus.put(p, true);
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
+    public boolean getBotSurEchelle(int x, int y, int z){
+//        System.out.println(botSurEchelle.containsKey(new Point3D(x,y,z)));
+        if(botSurEchelle.containsKey(new Point3D(x,y,z)) && botSurEchelle.get(new Point3D(x,y,z))){
+            return true;
+        }
+        return false;
+    }
+    public boolean getBotSurBombe(int x, int y, int z){
+        if(botSurBombe.containsKey(new Point3D(x,y,z)) && botSurBombe.get(new Point3D(x,y,z))){
+            return true;
+        }
+        return false;
+    }
+    public boolean getBotSurBonus(int x, int y, int z){
+        if(botSurBonus.containsKey(new Point3D(x,y,z)) && botSurBonus.get(new Point3D(x,y,z))){
+            return true;
+        }
+        return false;
+    }
     public void start(long _pause) {
         ordonnanceur.start(_pause);
     }
@@ -72,7 +114,7 @@ public class Jeu<Integer> {
     public Heros getHector() {
         return hector;
     }
-    public Bot getZombie(){return zombie;}
+    public Bot getZombie1(){return zombie1;}
 
     public void restart(){
         if(end){
@@ -83,8 +125,10 @@ public class Jeu<Integer> {
     private void initialisationDesEntites() {
         hector = new Heros(this);
         addEntite(hector, 2, 1, 0);
-        zombie = new Bot(this);
-        addEntite(zombie, 13,3,0);
+        zombie1 = new Bot(this);
+        addEntite(zombie1, 12,5,0);
+        zombie2 = new Bot(this);
+        addEntite(zombie2, 17,8,0);
 
         Colonne c1_cube1 = new Colonne(this, 'r');
         addEntite(c1_cube1, 6,8,0);
@@ -93,13 +137,13 @@ public class Jeu<Integer> {
         Colonne c1_cube3 = new Colonne(this, 'r');
         addEntite(c1_cube3, 6,6,0);
         Colonne c2_cube1 = new Colonne(this, 'b');
-        addEntite(c2_cube1, 15,1,0);
+        addEntite(c2_cube1, 17,1,0);
         Colonne c2_cube2 = new Colonne(this, 'b');
-        addEntite(c2_cube2, 15,2,0);
+        addEntite(c2_cube2, 17,2,0);
         Colonne c2_cube3 = new Colonne(this, 'b');
-        addEntite(c2_cube3, 15,3,0);
+        addEntite(c2_cube3, 17,3,0);
         Colonne c2_cube4 = new Colonne(this, 'b');
-        addEntite(c2_cube4, 15,4,0);
+        addEntite(c2_cube4, 17,4,0);
 
         Dispenser disp1 = new Dispenser(this, 'd');
         addEntite(disp1, 1,2,1);
@@ -111,11 +155,13 @@ public class Jeu<Integer> {
 
         Gravite g = new Gravite();
         g.addEntiteDynamique(hector);
-        g.addEntiteDynamique(zombie);
+        g.addEntiteDynamique(zombie1);
+        g.addEntiteDynamique(zombie2);
         ordonnanceur.add(g);
 
         Controle4Directions.getInstance().addEntiteDynamique(hector);
-        IA.getInstance().addEntiteDynamique(zombie);
+        IA.getInstance(1).addEntiteDynamique(zombie1);
+        IA.getInstance(2).addEntiteDynamique(zombie2);
 
         colControl.getInstance().addEntiteDynamique(c1_cube1);
         colControl.getInstance().addEntiteDynamique(c1_cube2);
@@ -128,7 +174,8 @@ public class Jeu<Integer> {
         FlecheControl.getInstance().addEntiteDynamique(fleche1);
 
         ordonnanceur.add(Controle4Directions.getInstance());
-        ordonnanceur.add(IA.getInstance());
+        ordonnanceur.add(IA.getInstance(1));
+        ordonnanceur.add(IA.getInstance(2));
         ordonnanceur.add(colControl.getInstance());
         ordonnanceur.add(FlecheControl.getInstance());
 
@@ -144,33 +191,49 @@ public class Jeu<Integer> {
             addEntite(new Mur(this), 19, y,0);
         }
 
-        addEntite(new Mur(this), 2, 6,0);
-        addEntite(new Mur(this), 3, 6,0);
+        addEntite(new Mur(this), 2, 5,0);
+        addEntite(new Mur(this), 3, 5,0);
+
+        addEntite(new Mur(this), 8,4,0);
+        addEntite(new Mur(this), 9,4,0);
 
         addEntite(new Mur(this), 9, 6,0);
         addEntite(new Mur(this), 10, 6,0);
+        addEntite(new Mur(this), 11, 6,0);
+        addEntite(new Mur(this), 12, 6,0);
 
-        addEntite(new Mur(this), 12, 4,0);
-        addEntite(new Mur(this), 13, 4,0);
         addEntite(new Mur(this), 14, 4,0);
+        addEntite(new Mur(this), 15, 4,0);
+        addEntite(new Mur(this), 16, 4,0);
+
+        addEntite(new Mur(this), 11,2,0);
+        addEntite(new Mur(this), 12,2,0);
+        addEntite(new Mur(this), 13,2,0);
 
         addEntite(new Bombe(this),7,8,1);
         addEntite(new Bombe(this),14,3,1);
+        addEntite(new Bombe(this), 11,5,1);
+        addEntite(new Bombe(this), 12,1,1);
 
         addEntite(new Bonus(this), 16,8,1);
+
+        addEntite(new Echelle(this), 10,4,1);
+        addEntite(new Echelle(this), 10,3,1);
+        addEntite(new Echelle(this), 10,2,1);
 
         addEntite(new Echelle(this),8,8,1);
         addEntite(new Echelle(this),8,7,1);
         addEntite(new Echelle(this),8,6,1);
 
-        addEntite(new Echelle(this),11,6,1);
-        addEntite(new Echelle(this),11,5,1);
-        addEntite(new Echelle(this),11,4,1);
+        addEntite(new Echelle(this),13,6,1);
+        addEntite(new Echelle(this),13,5,1);
+        addEntite(new Echelle(this),13,4,1);
 
+        addEntite(new Echelle(this),4,5,1);
         addEntite(new Echelle(this),4,6,1);
         addEntite(new Echelle(this),4,7,1);
         addEntite(new Echelle(this),4,8,1);
-
+        initBotSprites();
 
 
 
@@ -207,7 +270,7 @@ public class Jeu<Integer> {
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bombe) {
                 cptBombe++;
                 score+=100;
-                if (cptBombe == 2) win=true; //A modifier
+                if (cptBombe == 4) win=true; //A modifier
                 System.out.println(cptBombe);
             }
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bonus) {
@@ -215,14 +278,14 @@ public class Jeu<Integer> {
                 System.out.println(cptBombe);
             }
             if ((objetALaPosition(pCourant) instanceof Bot) && objetALaPosition(pCible) instanceof Ramassable) {
-                if(objetALaPosition(pCible) instanceof Bombe) botSurBombe = true;
-                else botSurBonus= true;
+                if(objetALaPosition(pCible) instanceof Bombe) botSurBombe.put(pCourant, true);
+                else botSurBonus.put(pCourant, true);
             }
 
             //Gestion Echelle
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot){
-                botSurBombe = false;
-                botSurBonus = false;
+                botSurBombe.put(pCourant, false);
+                botSurBonus.put(pCourant, false);
             }
             if (Bombe.getTotalBombes()==cptBombe) System.out.println("Vous avez gagné !");
 
@@ -233,10 +296,10 @@ public class Jeu<Integer> {
                 herosSurEchelle =false;
             }
             if ((objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot) {
-                botSurEchelle =true;
+                botSurEchelle.put(pCourant, true);
             }
             else if (!(objetALaPosition(pCible) instanceof Echelle)&& e instanceof Bot && !(objetALaPosition(pCible) instanceof Mur)) {
-                botSurEchelle =false;
+                botSurEchelle.put(pCourant, false);
             }
 
             //Gestion direction gauche/droite

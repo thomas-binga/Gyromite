@@ -3,16 +3,21 @@ package modele.deplacements;
 import modele.plateau.Entite;
 import modele.plateau.EntiteDynamique;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IA extends RealisateurDeDeplacement {
     private Direction directionCourante;
     // Design pattern singleton
     private static IA c3d;
+    private static ArrayList<IA> c3dList = new ArrayList<IA>();
+    public int nbrbot = 0;
 
-    public static IA getInstance() {
-        if (c3d == null) {
-            c3d = new IA();
+    public static IA getInstance(int n) {
+        if(c3dList == null || (n>c3dList.size())){
+            c3dList.add(new IA());
         }
-        return c3d;
+        return c3dList.get(n-1);
     }
 
     public void setDirectionCourante() {

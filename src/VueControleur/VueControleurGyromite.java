@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import javafx.geometry.Point3D;
 import modele.deplacements.Controle4Directions;
 import modele.deplacements.Direction;
 import modele.deplacements.colControl;
@@ -211,18 +212,18 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         }
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Bot){
-                        if (jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBotEchelle);
-                        else if (!jeu.botSurEchelle) tabJLabel[x][y].setIcon(icoBot);
-                        if(jeu.botRegardeDroite >0 && (!jeu.botSurEchelle)) {
+                        if (jeu.getBotSurEchelle(x,y,0)) tabJLabel[x][y].setIcon(icoBotEchelle);
+                        else if (!jeu.getBotSurEchelle(x,y,0)) tabJLabel[x][y].setIcon(icoBot);
+                        if(jeu.botRegardeDroite >0 && (!jeu.getBotSurEchelle(x,y,0))) {
                             tabJLabel[x][y].setIcon(icoBotDroite);
                         }
-                        else if(jeu.botRegardeGauche >0 && (!jeu.botSurEchelle)) {
+                        else if(jeu.botRegardeGauche >0 && (!jeu.getBotSurEchelle(x,y,0))) {
                             tabJLabel[x][y].setIcon(icoBotGauche);
                         }
-                        if (jeu.botSurBombe && (!jeu.botSurEchelle) && (!jeu.botSurBonus) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBombe);
-                        else if ((!jeu.botSurBombe) && (!jeu.botSurEchelle) && (!jeu.botSurBonus) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
-                        if (jeu.botSurBonus && (!jeu.botSurEchelle) && (!jeu.botSurBombe) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBonus);
-                        else if ((!jeu.botSurBonus) && (!jeu.botSurEchelle) && (!jeu.botSurBombe) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.getBotSurBombe(x,y,0) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBonus(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBombe);
+                        else if ((!jeu.getBotSurBombe(x,y,0)) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBonus(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
+                        if (jeu.getBotSurBonus(x,y,0) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBombe(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBotSurBonus);
+                        else if ((!jeu.getBotSurBonus(x,y,0)) && (!jeu.getBotSurEchelle(x,y,0)) && (!jeu.getBotSurBombe(x,y,0)) && (jeu.botRegardeGauche==0) && (jeu.botRegardeDroite==0)) tabJLabel[x][y].setIcon(icoBot);
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Mur) {
                         tabJLabel[x][y].setIcon(icoMur);
