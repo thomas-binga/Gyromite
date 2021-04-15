@@ -5,20 +5,23 @@ import modele.plateau.Entite;
 import modele.plateau.EntiteDynamique;
 import modele.plateau.Mur;
 
+import java.util.ArrayList;
+
 public class FlecheControl extends RealisateurDeDeplacement{
     private Direction directionCourante;
     // Design pattern singleton
     private static FlecheControl c3d;
+    private static ArrayList<FlecheControl> c3dList = new ArrayList<FlecheControl>();
 
-    public static FlecheControl getInstance() {
-        if (c3d == null) {
-            c3d = new FlecheControl();
+    public static FlecheControl getInstance(int n) {
+        if(c3dList == null || (n>c3dList.size())){
+            c3dList.add(new FlecheControl());
         }
-        return c3d;
+        return c3dList.get(n-1);
     }
 
     public static double getTimer() {
-        return Math.random()*20;
+        return Math.random()*12;
     }
 
     public void setDirectionCourante(Direction d) {

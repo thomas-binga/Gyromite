@@ -61,7 +61,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private ImageIcon icoDispenserGauche;
     private ImageIcon icoDispenserDroite;
     private ImageIcon icoFlecheGauche;
+    private ImageIcon icoFlecheGaucheDevantBombe;
+    private ImageIcon icoFlecheGaucheDevantEchelle;
+    private ImageIcon icoFlecheGaucheDevantBonus;
     private ImageIcon icoFlecheDroite;
+    private ImageIcon icoFlecheDroiteDevantBombe;
+    private ImageIcon icoFlecheDroiteDevantEchelle;
+    private ImageIcon icoFlecheDroiteDevantBonus;
     private ImageIcon imgFinGagne;
     private ImageIcon imgFinPerdu;
 
@@ -92,7 +98,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     case KeyEvent.VK_UP : Controle4Directions.getInstance().setDirectionCourante(Direction.haut); break;
                     case KeyEvent.VK_A : colControl.getInstance().setDirectionCourante('r'); break;
                     case KeyEvent.VK_E : colControl.getInstance().setDirectionCourante('b'); break;
-                    case KeyEvent.VK_R : jeu.restart();
+                    case KeyEvent.VK_R : jeu.restart(200);
                 }
             }
         });
@@ -128,7 +134,13 @@ public class VueControleurGyromite extends JFrame implements Observer {
         icoDispenserGauche = chargerIcone("Images/hires/DispenserGauche.png");
         icoDispenserDroite = chargerIcone("Images/hires/DispenserDroite.png");
         icoFlecheGauche = chargerIcone("Images/hires/FlecheGauche.png");
+        icoFlecheGaucheDevantBonus = chargerIcone("Images/hires/FlecheGaucheDevantEmeraude.png");
+        icoFlecheGaucheDevantBombe = chargerIcone("Images/hires/FlecheGaucheDevantBombe.png");
+        icoFlecheGaucheDevantEchelle = chargerIcone("Images/hires/FlecheGaucheDevantEchelle.png");
         icoFlecheDroite = chargerIcone("Images/hires/FlecheDroite.png");
+        icoFlecheDroiteDevantBonus = chargerIcone("Images/hires/FlecheDroiteDevantEmeraude.png");
+        icoFlecheDroiteDevantBombe = chargerIcone("Images/hires/FlecheDroiteDevantBombe.png");
+        icoFlecheDroiteDevantEchelle = chargerIcone("Images/hires/FlecheDroiteDevantEchelle.png");
 
         imgFinGagne = chargerIcone("Images/hires/finGagne.png");
         imgFinPerdu = chargerIcone("Images/hires/finPerdu.png");
@@ -258,10 +270,28 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     }
                     else if (jeu.getGrille()[x][y][z] instanceof Fleche && !(jeu.getGrille()[x][y][1] instanceof Dispenser)){
                         if(((Fleche) jeu.getGrille()[x][y][z]).sens == 'g'){
-                            tabJLabel[x][y].setIcon(icoFlecheGauche);
+                            if(jeu.getGrille()[x][y][1] instanceof Echelle){
+                                tabJLabel[x][y].setIcon(icoFlecheGaucheDevantEchelle);
+                            }
+                            else if (jeu.getGrille()[x][y][1] instanceof Bombe){
+                                tabJLabel[x][y].setIcon(icoFlecheGaucheDevantBombe);
+                            }
+                            else if (jeu.getGrille()[x][y][0] instanceof Bonus){
+                                tabJLabel[x][y].setIcon(icoFlecheGaucheDevantBonus);
+                            }
+                            else tabJLabel[x][y].setIcon(icoFlecheGauche);
                         }
                         else{
-                            tabJLabel[x][y].setIcon(icoFlecheDroite);
+                            if(jeu.getGrille()[x][y][1] instanceof Echelle){
+                                tabJLabel[x][y].setIcon(icoFlecheDroiteDevantEchelle);
+                            }
+                            else if (jeu.getGrille()[x][y][1] instanceof Bombe){
+                                tabJLabel[x][y].setIcon(icoFlecheDroiteDevantBombe);
+                            }
+                            else if (jeu.getGrille()[x][y][0] instanceof Bonus){
+                                tabJLabel[x][y].setIcon(icoFlecheDroiteDevantBonus);
+                            }
+                            else tabJLabel[x][y].setIcon(icoFlecheDroite);
                         }
                     }
                     else if(z==1 && y<10){
@@ -313,6 +343,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
             if(jeu.fleche1Timer > 0){
                 if (jeu.fleche1Timer - 0.5 >0) jeu.fleche1Timer-=0.5;
                 else jeu.fleche1Timer = 0;
+            }
+            if(jeu.fleche2Timer>0){
+                if (jeu.fleche2Timer - 0.5 > 0) jeu.fleche2Timer -= 0.5;
+                else jeu.fleche2Timer = 0;
             }
 
         }

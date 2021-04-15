@@ -9,6 +9,8 @@ import modele.deplacements.*;
 
 import javafx.geometry.Point3D;
 //import java.awt.Point;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /** Actuellement, cette classe gère les postions
@@ -51,6 +53,7 @@ public class Jeu<Integer> {
     public float botRegardeGauche = 0;
     public float botRegardeDroite = 0;
     public double fleche1Timer = FlecheControl.getTimer();
+    public double fleche2Timer = FlecheControl.getTimer();
 
 
     public Jeu() {
@@ -60,6 +63,19 @@ public class Jeu<Integer> {
     public void resetCmptDepl() {
         cmptDeplH.clear();
         cmptDeplV.clear();
+    }
+    public void reset(){
+        map.clear();
+        resetGrille();
+    }
+    public void resetGrille(){
+        for (int x = 0; x < SIZE_X; x++) {
+            for (int y = 0; y < SIZE_Y; y++) {
+                for (int z = SIZE_Z - 1; z >= 0; z--) {
+                    grilleEntites[x][y][z] = null;
+                }
+            }
+        }
     }
 
     private void initBotSprites(){
@@ -116,11 +132,15 @@ public class Jeu<Integer> {
     }
     public Bot getZombie1(){return zombie1;}
 
-    public void restart(){
+    public void restart(long _pause){
         if(end){
-            restart = true;
+            reset();
+            ordonnanceur.clear();
+            initialisationDesEntites();
         }
     }
+
+
     
     private void initialisationDesEntites() {
         hector = new Heros(this);
@@ -146,9 +166,14 @@ public class Jeu<Integer> {
         addEntite(c2_cube4, 17,4,0);
 
         Dispenser disp1 = new Dispenser(this, 'd');
-        addEntite(disp1, 1,2,1);
-        Fleche fleche1 = new Fleche(this, 'd', new Point3D(1,2,0));
-        addEntite(fleche1, 1,2,0);
+        addEntite(disp1, 0,2,1);
+        Dispenser disp2 = new Dispenser(this, 'g');
+        addEntite(disp2, 19,5,1);
+
+        Fleche fleche1 = new Fleche(this, 'd', new Point3D(0,2,0));
+        addEntite(fleche1, 0,2,0);
+        Fleche fleche2 = new Fleche(this, 'g', new Point3D(19,5,0));
+        addEntite(fleche2, 19,5,0);
 
 
 
@@ -171,13 +196,15 @@ public class Jeu<Integer> {
         colControl.getInstance().addEntiteDynamique(c2_cube3);
         colControl.getInstance().addEntiteDynamique(c2_cube4);
 
-        FlecheControl.getInstance().addEntiteDynamique(fleche1);
+        FlecheControl.getInstance(1).addEntiteDynamique(fleche1);
+        FlecheControl.getInstance(2).addEntiteDynamique(fleche2);
 
         ordonnanceur.add(Controle4Directions.getInstance());
         ordonnanceur.add(IA.getInstance(1));
         ordonnanceur.add(IA.getInstance(2));
         ordonnanceur.add(colControl.getInstance());
-        ordonnanceur.add(FlecheControl.getInstance());
+        ordonnanceur.add(FlecheControl.getInstance(1));
+        ordonnanceur.add(FlecheControl.getInstance(2));
 
         // murs extérieurs horizontaux
         for (int x = 0; x < 20; x++) {
@@ -187,8 +214,13 @@ public class Jeu<Integer> {
 
         // murs extérieurs verticaux
         for (int y = 1; y < 9; y++) {
-            addEntite(new Mur(this), 0, y,0);
-            addEntite(new Mur(this), 19, y,0);
+            if(y != 2) {
+                addEntite(new Mur(this), 0, y, 0);
+            }
+            if(y != 5){
+                addEntite(new Mur(this), 19, y,0);
+            }
+
         }
 
         addEntite(new Mur(this), 2, 5,0);
@@ -350,16 +382,25 @@ public class Jeu<Integer> {
 
             //Gestion Fleche
             if(fleche1Timer == 0){
-                FlecheControl.getInstance().setDirectionCourante(Direction.droite);
+                FlecheControl.getInstance(1).setDirectionCourante(Direction.droite);
+            }
+            if(fleche2Timer == 0){
+                FlecheControl.getInstance(2).setDirectionCourante(Direction.gauche);
             }
             if ((objetALaPosition(pCible) instanceof Bot) && objetALaPosition(pCourant) instanceof Fleche){
                 ((EntiteDynamique) objetALaPosition(pCible)).vivant = false;
             }
             if((objetALaPosition(pCible) instanceof Colonne || objetALaPosition(pCible) instanceof Mur) && e instanceof Fleche){
                 deplacerEntite(pCourant, ((Fleche) objetALaPosition(pCourant)).dispPos, e);
-                System.out.println("téleportation !");
-                FlecheControl.getInstance().resetDirection();
-                fleche1Timer = FlecheControl.getTimer();
+                if(((Fleche) e).sens == 'd'){
+                    FlecheControl.getInstance(1).resetDirection();
+                    fleche1Timer = FlecheControl.getInstance(1).getTimer();
+                }
+                else{
+                    FlecheControl.getInstance(2).resetDirection();
+                    fleche2Timer = FlecheControl.getInstance(2).getTimer();
+                }
+
             }
 
             //Gestion colonnes

@@ -14,11 +14,12 @@ public class Ordonnanceur extends Observable implements Runnable {
     private Jeu jeu;
     private ArrayList<RealisateurDeDeplacement> lstDeplacements = new ArrayList<RealisateurDeDeplacement>();
     private long pause;
-    Thread instance;
+    Thread instance = new Thread(this);
 
     public void add(RealisateurDeDeplacement deplacement) {
         lstDeplacements.add(deplacement);
     }
+    public void clear() {lstDeplacements.clear();}
 
     public Ordonnanceur(Jeu _jeu) {
         jeu = _jeu;
@@ -26,8 +27,10 @@ public class Ordonnanceur extends Observable implements Runnable {
 
     public void start(long _pause) {
         pause = _pause;
-        Thread instance = new Thread(this);
         instance.start();
+    }
+    public void stop(){
+        instance.stop();
     }
 
     @Override
@@ -55,10 +58,6 @@ public class Ordonnanceur extends Observable implements Runnable {
                 sleep(pause);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            if (jeu.restart){
-                instance.stop();
-                instance.start();
             }
         }
 

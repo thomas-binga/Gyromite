@@ -9,7 +9,6 @@ import java.util.List;
 public class IA extends RealisateurDeDeplacement {
     private Direction directionCourante;
     // Design pattern singleton
-    private static IA c3d;
     private static ArrayList<IA> c3dList = new ArrayList<IA>();
     public int nbrbot = 0;
 
