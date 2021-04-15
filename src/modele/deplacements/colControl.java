@@ -41,12 +41,16 @@ public class colControl extends RealisateurDeDeplacement{
 //                            if (e.avancerDirectionChoisie(Direction.haut)){
 //                                ret = true;
 
-                            if (!(eHaut instanceof Mur)) {
-                                if (e.avancerDirectionChoisie(Direction.haut)) {
-                                    ret = true;
-                                }
-                                break;
+//                            if (!(eHaut instanceof Mur)) {
+//                                if (e.avancerDirectionChoisie(Direction.haut)) {
+//                                    ret = true;
+//                                }
+//                                break;
+//                            }
+                            if (e.avancerDirectionChoisie(Direction.haut)) {
+                                ret = true;
                             }
+                            break;
                         case bas:
                             Entite eBas = e.regarderDansLaDirection(Direction.bas);
                             if (eBas == null || eBas.peutEtreEcrase()) {

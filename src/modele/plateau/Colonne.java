@@ -10,7 +10,7 @@ public class Colonne extends EntiteDynamique {
     public boolean peutServirDeSupport() { return true; }
     public boolean peutPermettreDeMonterDescendre() { return false; };
     public boolean peutEcraser() {return true;}
-    public boolean bord = false;
+    public boolean continuer = true;
     public char couleur = 'r';
 
     @Override

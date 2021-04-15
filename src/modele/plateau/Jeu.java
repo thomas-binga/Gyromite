@@ -19,8 +19,10 @@ public class Jeu<Integer> {
     public static final int SIZE_X = 20;
     public static final int SIZE_Y = 11;
     public static final int SIZE_Z = 2;
-    public boolean end = false;
+    public boolean loose = false;
     public boolean win = false;
+    public boolean end = false;
+    public boolean restart = false;
 
     // compteur de déplacements horizontal et vertical (1 max par défaut, à chaque pas de temps)
     private final HashMap<Entite, java.lang.Integer> cmptDeplH = new HashMap<Entite, java.lang.Integer>();
@@ -71,6 +73,12 @@ public class Jeu<Integer> {
         return hector;
     }
     public Bot getZombie(){return zombie;}
+
+    public void restart(){
+        if(end){
+            restart = true;
+        }
+    }
     
     private void initialisationDesEntites() {
         hector = new Heros(this);
@@ -265,11 +273,11 @@ public class Jeu<Integer> {
             //Gestion Collisions Bot
             if (objetALaPosition(pCible) instanceof Bot && objetALaPosition(pCourant) instanceof Heros)
             {
-                end = true;
+                loose = true;
             }
             if (objetALaPosition(pCible) instanceof Heros && objetALaPosition(pCourant) instanceof Bot)
             {
-                end = true;
+                loose = true;
             }
             if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
             {
@@ -290,6 +298,20 @@ public class Jeu<Integer> {
                 FlecheControl.getInstance().resetDirection();
                 fleche1Timer = FlecheControl.getTimer();
             }
+
+            //Gestion colonnes
+//            if(objetALaPosition(pCourant) instanceof Colonne && objetALaPosition(pCible) instanceof Mur){
+//                ((Colonne) objetALaPosition(pCourant)).continuer = false;
+//            }
+//            if(objetALaPosition(pCourant) instanceof Colonne && objetALaPosition(pCible) instanceof Colonne){
+//                if(((Colonne) objetALaPosition(pCible)).continuer){
+//                    deplacerEntite(pCourant, pCible, e);
+//                    return true;
+//                }
+//                else{
+//                    ((Colonne) objetALaPosition(pCourant)).continuer = false;
+//                }
+//            }
 
 
         }
@@ -344,7 +366,7 @@ public class Jeu<Integer> {
         if((objetALaPosition(pCible) instanceof Heros) && ((e instanceof Colonne) || (e instanceof Fleche))){
             ((Heros) objetALaPosition(pCible)).vivant = false;
             //Changer Sprite + Afficher Game Over
-            this.end=true;
+            this.loose =true;
         }
         grilleEntites[(int) pCourant.getX()][(int) pCourant.getY()][0] = null;
 

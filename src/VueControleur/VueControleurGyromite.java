@@ -3,6 +3,7 @@ package VueControleur;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
     private int sizeZ;
     public Graphics g;
     long startTime = System.nanoTime();
+
 
     // icones affichées dans la grille
     private ImageIcon icoHero;
@@ -89,6 +91,7 @@ public class VueControleurGyromite extends JFrame implements Observer {
                     case KeyEvent.VK_UP : Controle4Directions.getInstance().setDirectionCourante(Direction.haut); break;
                     case KeyEvent.VK_A : colControl.getInstance().setDirectionCourante('r'); break;
                     case KeyEvent.VK_E : colControl.getInstance().setDirectionCourante('b'); break;
+                    case KeyEvent.VK_R : jeu.restart();
                 }
             }
         });
@@ -173,10 +176,12 @@ public class VueControleurGyromite extends JFrame implements Observer {
         JLabel endScreentxt = new JLabel();
         endScreenPanel.add(endScreentxt);
 
-        if (jeu.end){
+        if (jeu.loose){
             endScreentxt.setIcon(imgFinPerdu);
+            jeu.end = true;
         } else if (jeu.win) {
             endScreentxt.setIcon(imgFinGagne);
+            jeu.end = true;
         }
 
 
@@ -226,12 +231,10 @@ public class VueControleurGyromite extends JFrame implements Observer {
                         if(!(jeu.getGrille()[x][y-1][z] instanceof Colonne)){
                             if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_haut);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_haut);
-                            ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else if(!(jeu.getGrille()[x][y+1][z] instanceof Colonne)){
                             if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_bas);
                             else tabJLabel[x][y].setIcon(icoColonne_bleu_bas);
-                            ((Colonne) jeu.getGrille()[x][y][z]).bord = true;
                         }
                         else {
                             if(col.couleur == 'r') tabJLabel[x][y].setIcon(icoColonne_rouge_corps);
@@ -297,8 +300,9 @@ public class VueControleurGyromite extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (jeu.end || jeu.win){
+        if (jeu.loose || jeu.win){
             endScreen();
+            jeu.end = true;
         } else {
             mettreAJourAffichage();
             if (jeu.herosRegardeDroite > 0) jeu.herosRegardeDroite -= 0.5;
