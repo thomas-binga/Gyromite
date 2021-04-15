@@ -1,26 +1,29 @@
 package VueControleur;
 
-import javax.sound.sampled.*;
+import jaco.mp3.player.MP3Player;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 
 
 public class MusicPlayer {
-    public static void main(String[] args) {
-        System.out.println("caca");
-        try {
-            File f = new File("Music/minecraft.wav");
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-            System.out.println("c'est censé jouer de la musique la");
-//            clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch(Exception ex) {
-            System.out.println("Error with playing sound.");
-            ex.printStackTrace();
+    String path = new String();
+    boolean loop;
+    public MusicPlayer(String path, boolean loop){
+        this.path=path;
+        this.loop=loop;
+    }
+    public void main(String[] args) {
+        try{
+            File f = new File ("Music/"+path);
+            MP3Player mp3 = new MP3Player(f);
+            mp3.setRepeat(loop);
+            mp3.setShuffle(loop);
+            mp3.play();
+            while(!mp3.isStopped()){
+                Thread.sleep(5000);
+            }
+        }
+        catch(Exception e){
+            System.err.println(e);
         }
     }
 }

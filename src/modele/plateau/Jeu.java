@@ -5,6 +5,7 @@
  */
 package modele.plateau;
 
+import VueControleur.MusicPlayer;
 import modele.deplacements.*;
 
 import javafx.geometry.Point3D;
@@ -119,8 +120,17 @@ public class Jeu<Integer> {
         }
         return false;
     }
+    public void PlayMusic(String path, boolean loop){
+        Thread tMusic = new Thread(() -> {
+            MusicPlayer m = new MusicPlayer(path, loop);
+            m.main(new String[]{});
+        });
+        tMusic.start();
+    }
     public void start(long _pause) {
+        System.out.println("caca");
         ordonnanceur.start(_pause);
+        PlayMusic("Minecraft.mp3", true);
     }
     
     public Entite[][][] getGrille() {
@@ -303,11 +313,10 @@ public class Jeu<Integer> {
                 cptBombe++;
                 score+=100;
                 if (cptBombe == 4) win=true; //A modifier
-                System.out.println(cptBombe);
             }
             if ((objetALaPosition(pCourant) instanceof Heros) && objetALaPosition(pCible) instanceof Bonus) {
                 score+=200;
-                System.out.println(cptBombe);
+                PlayMusic("levelup.mp3", false);
             }
             if ((objetALaPosition(pCourant) instanceof Bot) && objetALaPosition(pCible) instanceof Ramassable) {
                 if(objetALaPosition(pCible) instanceof Bombe) botSurBombe.put(pCourant, true);
@@ -377,6 +386,7 @@ public class Jeu<Integer> {
             if( (objetALaPosition(pCible)instanceof Bot) && (objetALaPosition(pCourant) instanceof Colonne))
             {
                 ((Bot) objetALaPosition(pCible)).vivant = false;
+                PlayMusic("mk.mp3", false);
                 retour=true;
             }
 

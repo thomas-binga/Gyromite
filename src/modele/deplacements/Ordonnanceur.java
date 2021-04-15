@@ -1,5 +1,6 @@
 package modele.deplacements;
 
+import VueControleur.MusicPlayer;
 import modele.plateau.Jeu;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Ordonnanceur extends Observable implements Runnable {
     public void start(long _pause) {
         pause = _pause;
         instance.start();
+
     }
     public void stop(){
         instance.stop();
