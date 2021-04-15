@@ -263,6 +263,7 @@ public class Jeu<Integer> {
         addEntite(new Bombe(this), 12,1,1);
 
         addEntite(new Bonus(this), 16,8,1);
+        addEntite(new Bonus(this), 9,3,1);
 
         addEntite(new Echelle(this), 10,4,1);
         addEntite(new Echelle(this), 10,3,1);
